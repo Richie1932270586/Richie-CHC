@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ride-hailing Ops Copilot — Ops Workspace</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --bg-2: #eef2f9;
+      --panel: rgba(255,255,255,0.84);
+      --panel-solid: #ffffff;
+      --panel-dark: #0e172c;
+      --line: #e6ebf5;
+      --line-2: #d8dfec;
+      --text: #0f172a;
+      --muted: #667085;
+      --muted-2: #98a2b3;
+      --brand: #4f46e5;
+      --brand-2: #7c3aed;
+      --brand-soft: rgba(79,70,229,0.10);
+      --success: #16a34a;
+      --success-soft: rgba(22,163,74,0.12);
+      --warning: #d97706;
+      --warning-soft: rgba(217,119,6,0.12);
+      --danger: #dc2626;
+      --danger-soft: rgba(220,38,38,0.12);
+      --shadow-xs: 0 1px 2px rgba(15,23,42,0.06);
+      --shadow-sm: 0 10px 24px rgba(15,23,42,0.06);
+      --shadow-lg: 0 22px 60px rgba(99,102,241,0.14);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 12px;
+      --nav-w: 290px;
+      --content-max: 1600px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(124,58,237,0.12) 0, transparent 28%),
+        radial-gradient(circle at top right, rgba(79,70,229,0.12) 0, transparent 22%),
+        linear-gradient(180deg, #fafbff 0%, #f4f7fc 58%, #eff3fb 100%);
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; }
+
+    .shell {
+      display: grid;
+      grid-template-columns: var(--nav-w) 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      padding: 24px 18px;
+      border-right: 1px solid rgba(15,23,42,0.06);
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      padding: 10px 12px 18px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 18px;
+    }
+    .brand-logo {
+      width: 46px; height: 46px;
+      border-radius: 16px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color: white;
+      font-weight: 800;
+      box-shadow: var(--shadow-lg);
+      letter-spacing: .02em;
+    }
+    .brand h1 {
+      margin: 0 0 4px;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+    .brand p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .workspace-card {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(79,70,229,0.10), rgba(124,58,237,0.08));
+      border: 1px solid rgba(99,102,241,0.14);
+      box-shadow: var(--shadow-xs);
+      margin: 4px 6px 18px;
+    }
+    .workspace-card .eyebrow {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .workspace-card h3 {
+      margin: 8px 0 6px;
+      font-size: 15px;
+    }
+    .workspace-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .nav-section {
+      margin: 16px 0;
+    }
+    .nav-label {
+      margin: 0 12px 10px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+    .nav-btn:hover {
+      background: rgba(79,70,229,0.06);
+      border-color: rgba(79,70,229,0.10);
+    }
+    .nav-btn.active {
+      background: linear-gradient(135deg, rgba(79,70,229,0.12), rgba(124,58,237,0.08));
+      border-color: rgba(79,70,229,0.16);
+      box-shadow: inset 0 0 0 1px rgba(79,70,229,0.04);
+    }
+    .nav-left {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .nav-icon {
+      width: 34px; height: 34px;
+      border-radius: 12px;
+      display: grid; place-items: center;
+      background: rgba(15,23,42,0.04);
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .nav-btn.active .nav-icon {
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color: white;
+    }
+    .nav-pill {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.05);
+      color: var(--muted);
+    }
+
+    .sidebar-footer {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: white;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-xs);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .main {
+      padding: 26px 30px 40px;
+    }
+    .main-inner {
+      max-width: var(--content-max);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      flex: 1;
+    }
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      width: min(520px, 100%);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.76);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: var(--shadow-xs);
+    }
+    .search input {
+      border: 0;
+      outline: 0;
+      background: transparent;
+      width: 100%;
+      color: var(--text);
+    }
+    .search small {
+      padding: 5px 8px;
+      border-radius: 10px;
+      background: var(--bg-2);
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .toolbar-btn, .primary-btn, .secondary-btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+    .toolbar-btn, .secondary-btn {
+      background: rgba(255,255,255,0.74);
+      border: 1px solid var(--line);
+      color: var(--text);
+      box-shadow: var(--shadow-xs);
+    }
+    .primary-btn {
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color: white;
+      box-shadow: var(--shadow-lg);
+    }
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.76);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 8px 10px 8px 8px;
+      box-shadow: var(--shadow-xs);
+    }
+    .avatar {
+      width: 38px; height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #111827, #374151);
+      color: white;
+      display: grid; place-items: center;
+      font-weight: 700;
+    }
+    .user-chip strong {
+      display: block;
+      font-size: 13px;
+    }
+    .user-chip span {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.3fr 0.8fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .hero-card, .panel {
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm);
+    }
+    .hero-card {
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: auto -60px -60px auto;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(79,70,229,0.18), transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .hero h2 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+    }
+    .hero p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 90%;
+    }
+    .hero-actions {
+      display: flex; gap: 12px; margin-top: 20px;
+    }
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .mini-stat {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--line);
+    }
+    .mini-stat span { color: var(--muted); font-size: 12px; }
+    .mini-stat strong { display: block; margin-top: 6px; font-size: 24px; letter-spacing: -0.03em; }
+
+    .digest-card {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.84), rgba(245,247,252,0.88));
+    }
+    .digest-card h3 { margin: 0 0 8px; font-size: 18px; }
+    .digest-card p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.65; }
+    .digest-list { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+    .digest-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px;
+      border-radius: 14px;
+      background: white;
+      border: 1px solid var(--line);
+    }
+    .dot {
+      width: 10px; height: 10px; border-radius: 999px; margin-top: 5px; flex: 0 0 auto;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .kpi {
+      background: rgba(255,255,255,0.84);
+      border: 1px solid rgba(255,255,255,0.72);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--shadow-xs);
+    }
+    .kpi-top {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      margin-bottom: 14px;
+    }
+    .kpi .label { color: var(--muted); font-size: 12px; }
+    .kpi .value { font-size: 32px; font-weight: 800; letter-spacing: -0.05em; }
+    .trend { font-size: 12px; font-weight: 700; padding: 6px 9px; border-radius: 999px; }
+    .trend.good { color: var(--success); background: var(--success-soft); }
+    .trend.warn { color: var(--warning); background: var(--warning-soft); }
+    .trend.danger { color: var(--danger); background: var(--danger-soft); }
+    .spark {
+      height: 42px;
+      display: grid; grid-auto-flow: column; gap: 6px; align-items: end;
+    }
+    .spark span {
+      display: block; width: 100%;
+      background: linear-gradient(180deg, rgba(124,58,237,0.26), rgba(79,70,229,0.72));
+      border-radius: 999px 999px 5px 5px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 0.9fr;
+      gap: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .panel-head h3 { margin: 0 0 4px; font-size: 18px; letter-spacing: -0.02em; }
+    .panel-head p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .panel {
+      padding: 20px;
+      min-width: 0;
+    }
+
+    .task-list { display: flex; flex-direction: column; gap: 12px; }
+    .task-row {
+      display: grid;
+      grid-template-columns: 1.1fr 140px 120px 140px 110px;
+      gap: 14px;
+      align-items: center;
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-xs);
+    }
+    .task-title {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .task-icon {
+      width: 42px; height: 42px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79,70,229,0.12), rgba(124,58,237,0.08));
+      display: grid; place-items: center; font-size: 18px;
+    }
+    .task-title strong { display: block; margin-bottom: 4px; }
+    .task-title span, .cell-muted { color: var(--muted); font-size: 12px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge.brand { color: var(--brand); background: var(--brand-soft); }
+    .badge.success { color: var(--success); background: var(--success-soft); }
+    .badge.warning { color: var(--warning); background: var(--warning-soft); }
+    .badge.danger { color: var(--danger); background: var(--danger-soft); }
+    .badge.slate { color: #334155; background: rgba(15,23,42,0.06); }
+
+    .tiny-metrics { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tiny-chip {
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(15,23,42,0.04);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .bars { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+    .bar-row { display: grid; grid-template-columns: 110px 1fr 46px; gap: 12px; align-items: center; }
+    .bar-track {
+      height: 10px; border-radius: 999px; background: #edf1f7; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--brand), var(--brand-2));
+    }
+    .label-muted { font-size: 12px; color: var(--muted); }
+
+    .schedule-card {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.86);
+      border: 1px solid var(--line);
+    }
+    .calendar-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 16px; }
+    .day {
+      padding: 12px 10px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid var(--line);
+      text-align: center;
+      box-shadow: var(--shadow-xs);
+    }
+    .day.active { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: white; border-color: transparent; }
+    .day .num { font-weight: 800; font-size: 18px; }
+    .day .sub { font-size: 11px; opacity: .78; margin-top: 4px; }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .split {
+      display: grid; grid-template-columns: 320px 1fr; gap: 18px;
+    }
+    .split-3 {
+      display: grid; grid-template-columns: 330px 1fr 360px; gap: 18px;
+    }
+
+    .list-card {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .list-item {
+      display: flex; gap: 12px; align-items: center;
+      padding: 13px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+    .list-item:hover, .list-item.active { border-color: rgba(79,70,229,0.16); background: linear-gradient(135deg, rgba(79,70,229,0.08), rgba(124,58,237,0.05)); }
+    .list-item strong { display: block; }
+    .list-item span { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    .section-block {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.84);
+      border: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+    .section-block h4 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+    .meta-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;
+    }
+    .meta-item span {
+      display: block; color: var(--muted); font-size: 12px; margin-bottom: 6px;
+    }
+    .meta-item strong { font-size: 14px; }
+
+    .stepper { display: flex; flex-direction: column; gap: 14px; }
+    .step {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .step-num {
+      width: 42px; height: 42px;
+      border-radius: 14px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, rgba(79,70,229,0.12), rgba(124,58,237,0.08));
+      color: var(--brand);
+      font-weight: 800;
+    }
+    .step-card {
+      padding: 15px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-xs);
+    }
+    .step-card strong { display: block; margin-bottom: 6px; }
+    .step-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+    .step-bottom { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+    .assistant-panel {
+      background: linear-gradient(180deg, rgba(14,23,44,0.96), rgba(17,24,39,0.98));
+      color: #e5e7eb;
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(2,6,23,0.28);
+      position: sticky;
+      top: 24px;
+    }
+    .assistant-panel h3 { margin: 0 0 6px; font-size: 18px; }
+    .assistant-panel p { margin: 0; font-size: 13px; line-height: 1.7; color: #aeb8d0; }
+    .assistant-block {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .assistant-block h4 { margin: 0 0 8px; font-size: 14px; color: #fff; }
+    .assistant-list { display: flex; flex-direction: column; gap: 10px; }
+    .assistant-item {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      color: #cad5ef;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .assistant-input {
+      display: flex; gap: 10px; align-items: center; margin-top: 16px;
+      background: rgba(255,255,255,0.06);
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .assistant-input input {
+      width: 100%; border: 0; outline: 0; background: transparent; color: white;
+    }
+
+    .check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .check-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-xs);
+    }
+    .check-card h4 { margin: 0 0 10px; }
+    .check-line {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px dashed #e8edf7;
+      font-size: 13px;
+    }
+    .check-line:last-child { border-bottom: 0; }
+
+    .status-ok, .status-risk, .status-block {
+      font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: 999px;
+    }
+    .status-ok { color: var(--success); background: var(--success-soft); }
+    .status-risk { color: var(--warning); background: var(--warning-soft); }
+    .status-block { color: var(--danger); background: var(--danger-soft); }
+
+    .result-banner {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(217,119,6,0.10), rgba(220,38,38,0.08));
+      border: 1px solid rgba(217,119,6,0.14);
+      margin-bottom: 16px;
+    }
+    .result-banner strong { display: block; margin-bottom: 6px; }
+    .result-banner p { margin: 0; color: #8a4b00; font-size: 13px; line-height: 1.65; }
+
+    .chat-layout { display: grid; grid-template-columns: 280px 1fr 340px; gap: 18px; }
+    .suggestions { display: flex; flex-direction: column; gap: 10px; }
+    .suggestion {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      transition: .18s ease;
+    }
+    .suggestion:hover { border-color: rgba(79,70,229,0.18); background: var(--brand-soft); }
+    .chat-box {
+      display: flex; flex-direction: column; gap: 14px;
+      min-height: 620px;
+    }
+    .bubble {
+      max-width: 88%;
+      padding: 14px 16px;
+      border-radius: 20px;
+      line-height: 1.7;
+      font-size: 13px;
+      box-shadow: var(--shadow-xs);
+    }
+    .bubble.user {
+      margin-left: auto;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color: white;
+      border-bottom-right-radius: 8px;
+    }
+    .bubble.ai {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 8px;
+    }
+    .chat-input {
+      display: flex; gap: 10px; align-items: center;
+      margin-top: auto;
+      padding-top: 8px;
+    }
+    .chat-input input {
+      flex: 1;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.84);
+      padding: 13px 14px;
+      outline: none;
+    }
+
+    .faq-card, .metric-list-card {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid var(--line);
+      margin-bottom: 10px;
+    }
+    .faq-card strong { display: block; margin-bottom: 8px; font-size: 14px; }
+    .faq-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+    .manager-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .table {
+      width: 100%; border-collapse: collapse; font-size: 13px;
+    }
+    .table th, .table td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid #edf1f7;
+    }
+    .table th { color: var(--muted); font-size: 12px; font-weight: 700; }
+
+    .footnote {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    @media (max-width: 1280px) {
+      .hero, .grid-2, .grid-3, .split, .split-3, .chat-layout, .manager-grid { grid-template-columns: 1fr; }
+      .task-row { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 980px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: relative; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+      .main { padding: 18px; }
+      .task-row { grid-template-columns: 1fr; }
+      .check-grid { grid-template-columns: 1fr; }
+      .topbar { flex-direction: column; align-items: stretch; }
+      .topbar-right { justify-content: space-between; }
+    }
+    @media (max-width: 640px) {
+      .kpis { grid-template-columns: 1fr; }
+      .hero h2 { font-size: 24px; }
+      .hero p { max-width: 100%; }
+      .meta-grid { grid-template-columns: 1fr; }
+      .topbar-right { flex-wrap: wrap; }
+      .toolbar-btn, .primary-btn, .secondary-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">RC</div>
+        <div>
+          <h1>Ride-hailing Ops Copilot</h1>
+          <p>AI-driven campaign execution workspace</p>
+        </div>
+      </div>
+
+      <div class="workspace-card">
+        <div class="eyebrow">Workspace</div>
+        <h3>阳光出行 · 活动运营中台</h3>
+        <p>面向高频活动运营场景的执行工作台，聚焦任务编排、规则解释与配置前校验。</p>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Navigation</div>
+        <div class="nav-list">
+          <button class="nav-btn active" data-page="dashboard">
+            <div class="nav-left"><span class="nav-icon">◫</span><span>今日待办</span></div>
+            <span class="nav-pill">Home</span>
+          </button>
+          <button class="nav-btn" data-page="tasks">
+            <div class="nav-left"><span class="nav-icon">☰</span><span>任务中心</span></div>
+            <span class="nav-pill">4 模块</span>
+          </button>
+          <button class="nav-btn" data-page="detail">
+            <div class="nav-left"><span class="nav-icon">↳</span><span>任务详情</span></div>
+            <span class="nav-pill">Steps</span>
+          </button>
+          <button class="nav-btn" data-page="checker">
+            <div class="nav-left"><span class="nav-icon">✓</span><span>配置检查器</span></div>
+            <span class="nav-pill">Risk</span>
+          </button>
+          <button class="nav-btn" data-page="copilot">
+            <div class="nav-left"><span class="nav-icon">✦</span><span>AI 问答</span></div>
+            <span class="nav-pill">Copilot</span>
+          </button>
+          <button class="nav-btn" data-page="manager">
+            <div class="nav-left"><span class="nav-icon">▣</span><span>主管看板</span></div>
+            <span class="nav-pill">Board</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <strong style="display:block;margin-bottom:6px;color:#111827;">核心范围</strong>
+        当前工作台聚焦 4 个规则密度较高的活动模块：争分夺奖、榜上有名、周期冲单奖、司推司，覆盖任务执行、风险识别与协同校验等关键环节。
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="topbar">
+          <div class="topbar-left">
+            <div class="search">
+              <span style="opacity:.55">⌕</span>
+              <input placeholder="搜索任务、规则、系统入口或高频问题…" />
+              <small>Ctrl K</small>
+            </div>
+          </div>
+          <div class="topbar-right">
+            <select id="taskSelect" class="toolbar-btn" style="min-width:220px;"></select>
+            <button class="secondary-btn" id="focusDetailBtn">查看当前任务详情</button>
+            <button class="primary-btn" id="focusCheckerBtn">运行检查</button>
+            <div class="user-chip">
+              <div class="avatar">CH</div>
+              <div>
+                <strong>陈慧驰</strong>
+                <span>运营策略与流程设计</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="page active" id="page-dashboard"></section>
+        <section class="page" id="page-tasks"></section>
+        <section class="page" id="page-detail"></section>
+        <section class="page" id="page-checker"></section>
+        <section class="page" id="page-copilot"></section>
+        <section class="page" id="page-manager"></section>
+
+        <div class="footnote">Operations workspace for campaign execution, review and risk control</div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const tasks = [
+      {
+        id: 'zfdj',
+        name: '争分夺奖',
+        icon: '⚡',
+        category: '日常配置',
+        trigger: 'Daily',
+        due: '18:00',
+        status: '待执行',
+        statusTone: 'warning',
+        risk: '高',
+        riskTone: 'danger',
+        owner: '活动运营',
+        systems: ['Push', '奖励系统', '邮件'],
+        summary: '每天配置次日活动；周五需一次覆盖周六、周日与周一，并在前一天 18:00 启用/发送。',
+        aiDigest: '今天是周五版本，优先检查 3 天模板是否完整覆盖，并确认周一模板与周末模板没有混用。',
+        deadlineHint: '如果今天为周五，则不是“明天 1 天”，而是“周六至周一 3 天”。',
+        progress: 62,
+        checksScore: 71,
+        steps: [
+          { title: '复制上周同类活动模板', desc: '从奖励系统中复制上周对应日期活动，避免漏项。', tags: ['模板继承', '高峰期版本'] },
+          { title: '修改活动日期与周期', desc: '工作日/周末/周一模板需分开设置；周五覆盖 3 天。', tags: ['日期校验', '周五例外'] },
+          { title: '配置 Push 与邮件', desc: 'Push 和邮件均需替换目标日期文案，并检查发送时间。', tags: ['文案同步', '发送时点'] },
+          { title: '设置前一天 18:00 启用', desc: '奖励系统启用时间、邮件定时发送时间均在前一天 18:00。', tags: ['启用校验', '时间提醒'] },
+          { title: '回查 4 个奖励活动是否全部上线', desc: '避免出现只启用了部分活动、漏掉某一类奖励配置。', tags: ['结果回查', '完整性'] }
+        ],
+        checks: [
+          ['日期是否覆盖周六至周一', 'block'],
+          ['模板是否匹配周一/工作日/周末', 'risk'],
+          ['Push 文案日期是否与目标日期一致', 'risk'],
+          ['奖励系统是否设置为前一天 18:00 启用', 'ok'],
+          ['邮件是否已设置为前一天 18:00 发送', 'ok'],
+          ['四个奖励活动是否全部启用', 'risk']
+        ],
+        aiAnswers: [
+          '今天如果是周五，系统会默认把任务解释为“多日批量配置”而不是“单日复制”。',
+          '最容易出错的是周一模板和周末模板混用，因此建议先分组检查再统一设时间。',
+          '若活动是高峰期版本，邮件文案和奖励周期不能直接沿用普通工作日模板。'
+        ]
+      },
+      {
+        id: 'bsym',
+        name: '榜上有名结算',
+        icon: '🏆',
+        category: '发奖结算',
+        trigger: 'Weekly',
+        due: '周二 12:00',
+        status: '进行中',
+        statusTone: 'brand',
+        risk: '高',
+        riskTone: 'danger',
+        owner: '活动运营 / 奖励发放',
+        systems: ['邮件表格【0072】', '模板1/2/3', '奖励系统', 'Push'],
+        summary: '每周二前完成结算、发奖与获奖通知，包含拉数、清洗、模板刷新、分奖励发放与成功回查。',
+        aiDigest: '本任务步骤链最长，建议先处理数据清洗，再拆分即时分、预约分与加速券三个发放动作。',
+        deadlineHint: '发奖后必须回查成功状态；奖励有效期字段是高频遗漏项。',
+        progress: 54,
+        checksScore: 63,
+        steps: [
+          { title: '下载【0072】邮件表格', desc: '按正确日期拉取榜上有名原始数据。', tags: ['日期来源', '原始数据'] },
+          { title: '贴入模板1并下拉公式', desc: '确保计算字段完整刷新，不能直接沿用旧公式结果。', tags: ['公式刷新', '模板1'] },
+          { title: '清洗阳光值为 0 与 N/A 的数据', desc: '若不清理无效记录，将直接影响后续奖励名单准确性。', tags: ['数据清洗', '异常值'] },
+          { title: '刷新模板2并生成模板3', desc: '用模板链完成发奖名单拆分与格式转换。', tags: ['模板2/3', '名单生成'] },
+          { title: '分别发即时分 / 预约分 / 券', desc: '三类奖励需独立发放，并补充有效期。', tags: ['奖励拆分', '有效期'] },
+          { title: '发获奖 Push 并回查成功状态', desc: '发奖完成后必须查看是否全部成功。', tags: ['回查', '通知触达'] }
+        ],
+        checks: [
+          ['原始日期是否拉对', 'risk'],
+          ['公式是否完整刷新', 'risk'],
+          ['0 / N/A 数据是否删除', 'block'],
+          ['奖励类型是否拆分为 3 类发放', 'ok'],
+          ['有效期字段是否填写', 'block'],
+          ['发奖完成后是否回查成功状态', 'risk']
+        ],
+        aiAnswers: [
+          '榜上有名不是“发一条 Push 就结束”，真正的高风险点在模板流转与奖励发放后回查。',
+          '如果模板 1 的公式没有重刷，后面模板 2 和模板 3 的名单都会连带错误。',
+          '建议先锁定日期，再做数据清洗，最后再进入发奖和通知步骤。'
+        ]
+      },
+      {
+        id: 'zqcdj',
+        name: '周期冲单奖',
+        icon: '📅',
+        category: '周期活动',
+        trigger: 'Weekly',
+        due: '周五 18:00',
+        status: '待检查',
+        statusTone: 'warning',
+        risk: '中',
+        riskTone: 'warning',
+        owner: '活动运营',
+        systems: ['Excel', 'Push', '邮件', 'Word'],
+        summary: '周期性激励需同步 Push、邮件与微信规则文档，且要关注调休工作日带来的时间规则变化。',
+        aiDigest: '本周主风险是“调休工作日”，若未更新发送节奏，周一至周五 7:00 与周五 18:00 的邮件同步可能发生错配。',
+        deadlineHint: '建议把 6 封邮件的发送时点与奖励规则文档一起核对。',
+        progress: 76,
+        checksScore: 82,
+        steps: [
+          { title: '从 Excel 粘值并生成奖励内容', desc: '清理原始 Excel 中用于同步活动内容的表格。', tags: ['Excel', '粘值'] },
+          { title: '配置 Push 文案与发送时点', desc: '确保 Push 标题、简介与日期保持一致。', tags: ['Push', '时点'] },
+          { title: '同步邮件节奏', desc: '周五 18:00 同步下周，周一至周五 7:00 同步本周。', tags: ['邮件', '工作日'] },
+          { title: '更新规则文档', desc: '将奖励规则同步到 Word/微信群说明版本。', tags: ['规则对齐', '文档'] },
+          { title: '检查调休工作日影响', desc: '确认是否需要把“工作日逻辑”替换为“节假日逻辑”。', tags: ['节假日', '异常分支'] }
+        ],
+        checks: [
+          ['6 封邮件是否全部完成同步', 'ok'],
+          ['Push 文案日期是否已更新', 'ok'],
+          ['若存在调休，是否切换了工作日逻辑', 'risk'],
+          ['奖励规则文档是否更新', 'risk'],
+          ['邮件和 Push 时间节奏是否一致', 'ok']
+        ],
+        aiAnswers: [
+          '周期冲单奖最容易被忽略的是“调休工作日”，因为规则看起来像工作日，实际上节奏更接近节假日。',
+          '如果邮件已同步但 Word 规则未更新，运营对外口径会不一致。',
+          '建议先做发送时点，再做文案和规则同步，可以减少返工。'
+        ]
+      },
+      {
+        id: 'sts',
+        name: '司推司',
+        icon: '🌆',
+        category: '城市促活',
+        trigger: 'Weekly / Monthly',
+        due: '周三至周四',
+        status: '待执行',
+        statusTone: 'warning',
+        risk: '高',
+        riskTone: 'danger',
+        owner: '城市运营',
+        systems: ['方案表', 'Push', '奖励系统', '邮件'],
+        summary: '按重点/加大力度/常规促活城市分层配置首单奖与新司机首单奖，新增城市和 3% 流水活动存在冲突校验。',
+        aiDigest: '本任务的复杂点在城市分层与频率逻辑：重点城市每周配，常规城市每月配，新纳入司推司的城市要从 3% 流水转出。',
+        deadlineHint: '配置前先明确城市级别，再检查金额、注册时间和活动频率。',
+        progress: 48,
+        checksScore: 59,
+        steps: [
+          { title: '识别城市分层', desc: '根据方案表区分重点、加大力度与常规促活城市。', tags: ['城市分层', '频率逻辑'] },
+          { title: '调整 Push 文案与金额', desc: '不同城市档位金额不同，文案也需同步变化。', tags: ['金额变化', '文案'] },
+          { title: '配置奖励系统日期与注册时间限制', desc: '首单奖常见错误是注册时间配置不正确。', tags: ['注册时间', '日期'] },
+          { title: '检查新增城市链路', desc: '新增城市必须同步修改方案、Push、奖励系统与邮件。', tags: ['新增城市', '全链路'] },
+          { title: '校验 3% 流水冲突', desc: '加入司推司的城市需先从 3% 流水中转出。', tags: ['冲突检查', '活动迁移'] }
+        ],
+        checks: [
+          ['城市级别是否识别正确', 'block'],
+          ['当前应为周更还是月更频率', 'risk'],
+          ['注册时间限制是否设置', 'risk'],
+          ['新增城市四步是否都改了', 'block'],
+          ['是否存在与 3% 流水的城市冲突', 'risk']
+        ],
+        aiAnswers: [
+          '司推司不是统一模板型任务，而是强依赖城市级别与频率分支的配置任务。',
+          '新增城市最容易出现“只改了 Push，没改奖励系统和邮件”的半更新问题。',
+          '如果城市已经进入司推司，但还留在 3% 流水活动里，后续会造成口径冲突。'
+        ]
+      }
+    ];
+
+    const faqData = [
+      {
+        q: '今天为什么要配三天争分夺奖？',
+        a: '因为当前示例日期为周五。根据手册规则，周五不是只配置周六，而是需要一次性覆盖周六、周日和周一，并分别匹配工作日/周末/周一版本。',
+        refs: ['争分夺奖周期规则', '周五特殊分支', '模板类型检查']
+      },
+      {
+        q: '榜上有名是周五发邮件还是周二发奖？',
+        a: '两者都存在，但属于不同动作。周五是活动通知邮件，周二前要完成结算、发奖和获奖通知，不能把“通知”和“结算”混为一步。',
+        refs: ['榜上有名时间链', '结算动作拆分']
+      },
+      {
+        q: '司推司和 3% 流水为什么会冲突？',
+        a: '因为同一城市不能同时在两套拉新激励逻辑中重复存在。若城市升级进入司推司机制，需要先从 3% 流水活动池转出。',
+        refs: ['城市迁移规则', '冲突校验']
+      }
+    ];
+
+    const navButtons = Array.from(document.querySelectorAll('.nav-btn'));
+    const pages = {
+      dashboard: document.getElementById('page-dashboard'),
+      tasks: document.getElementById('page-tasks'),
+      detail: document.getElementById('page-detail'),
+      checker: document.getElementById('page-checker'),
+      copilot: document.getElementById('page-copilot'),
+      manager: document.getElementById('page-manager')
+    };
+    const taskSelect = document.getElementById('taskSelect');
+    const focusDetailBtn = document.getElementById('focusDetailBtn');
+    const focusCheckerBtn = document.getElementById('focusCheckerBtn');
+    let currentTaskId = tasks[0].id;
+    let currentPage = 'dashboard';
+
+    function toneBadge(tone, text) {
+      const map = {
+        brand: 'brand', success: 'success', warning: 'warning', danger: 'danger', slate: 'slate'
+      };
+      return `<span class="badge ${map[tone] || 'slate'}">${text}</span>`;
+    }
+
+    function statusPill(status) {
+      const map = { ok: 'status-ok', risk: 'status-risk', block: 'status-block' };
+      const label = { ok: '通过', risk: '需关注', block: '阻塞' };
+      return `<span class="${map[status]}">${label[status]}</span>`;
+    }
+
+    function getCurrentTask() {
+      return tasks.find(t => t.id === currentTaskId) || tasks[0];
+    }
+
+    function setPage(pageKey) {
+      currentPage = pageKey;
+      Object.entries(pages).forEach(([key, page]) => {
+        page.classList.toggle('active', key === pageKey);
+      });
+      navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.page === pageKey));
+    }
+
+    function renderDashboard() {
+      pages.dashboard.innerHTML = `
+        <div class="hero">
+          <div class="hero-card">
+            <div class="hero-badge">✦ AI-first execution workspace</div>
+            <h2>将分散规则、任务节点与校验动作整合为统一运营工作台。</h2>
+            <p>围绕高频活动运营任务，系统提供待办聚合、步骤化执行、配置前风险检查与规则问答，帮助团队在复杂时点下更稳定地完成配置、核对与发布协同。</p>
+            <div class="hero-actions">
+              <button class="primary-btn" onclick="setPage('detail')">进入当前任务流程</button>
+              <button class="secondary-btn" onclick="setPage('copilot')">打开 AI 问答</button>
+            </div>
+            <div class="hero-metrics">
+              <div class="mini-stat"><span>核心模块</span><strong>4</strong></div>
+              <div class="mini-stat"><span>高风险规则</span><strong>23</strong></div>
+              <div class="mini-stat"><span>可检查校验项</span><strong>26</strong></div>
+              <div class="mini-stat"><span>核心页面</span><strong>6</strong></div>
+            </div>
+          </div>
+          <div class="hero-card digest-card">
+            <div>
+              <h3>AI 今日摘要</h3>
+              <p>当前视图以 <strong>周五运营排班</strong> 为例，优先展示跨天配置、多模板分支和定时发布等高风险任务，并突出关键时间节点与校验要求。</p>
+            </div>
+            <div class="digest-list">
+              <div class="digest-item"><span class="dot" style="background:var(--danger)"></span><div><strong>争分夺奖</strong><br><span class="label-muted">今天需一次性覆盖周六、周日、周一，并检查模板是否混用。</span></div></div>
+              <div class="digest-item"><span class="dot" style="background:var(--warning)"></span><div><strong>周期冲单奖</strong><br><span class="label-muted">同步下周邮件时需关注调休工作日异常规则。</span></div></div>
+              <div class="digest-item"><span class="dot" style="background:var(--brand)"></span><div><strong>司推司</strong><br><span class="label-muted">新增城市与 3% 流水冲突校验需在配置前完成。</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="kpi-top"><div><div class="label">今日待办任务</div><div class="value">8</div></div>${toneBadge('brand','+2 周五特殊')}</div>
+            <div class="spark"><span style="height:48%"></span><span style="height:56%"></span><span style="height:35%"></span><span style="height:78%"></span><span style="height:84%"></span><span style="height:62%"></span><span style="height:92%"></span></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div><div class="label">高风险节点</div><div class="value">5</div></div><span class="trend danger">需优先处理</span></div>
+            <div class="spark"><span style="height:28%"></span><span style="height:42%"></span><span style="height:51%"></span><span style="height:63%"></span><span style="height:68%"></span><span style="height:76%"></span><span style="height:88%"></span></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div><div class="label">检查器命中问题</div><div class="value">12</div></div><span class="trend warn">较昨日 +3</span></div>
+            <div class="spark"><span style="height:36%"></span><span style="height:44%"></span><span style="height:41%"></span><span style="height:58%"></span><span style="height:61%"></span><span style="height:67%"></span><span style="height:74%"></span></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div><div class="label">SOP 问答命中率</div><div class="value">91%</div></div><span class="trend good">解释成本下降</span></div>
+            <div class="spark"><span style="height:62%"></span><span style="height:64%"></span><span style="height:71%"></span><span style="height:76%"></span><span style="height:83%"></span><span style="height:86%"></span><span style="height:91%"></span></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head">
+              <div><h3>今日任务队列</h3><p>按截止时间、风险等级和是否存在例外规则排序。</p></div>
+              ${toneBadge('danger','周五模式')}
+            </div>
+            <div class="task-list">
+              ${tasks.map(task => `
+                <div class="task-row">
+                  <div class="task-title">
+                    <div class="task-icon">${task.icon}</div>
+                    <div>
+                      <strong>${task.name}</strong>
+                      <span>${task.summary}</span>
+                    </div>
+                  </div>
+                  <div><div class="cell-muted">周期</div><strong>${task.trigger}</strong></div>
+                  <div><div class="cell-muted">截止</div><strong>${task.due}</strong></div>
+                  <div>${toneBadge(task.riskTone, `${task.risk}风险`)}</div>
+                  <div><button class="secondary-btn" onclick="selectTask('${task.id}'); setPage('detail');">查看</button></div>
+                </div>`).join('')}
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <div><h3>本周执行日历</h3><p>帮助新人与主管快速理解“哪天该做哪类任务”。</p></div>
+              ${toneBadge('slate','Mar 2026')}
+            </div>
+            <div class="schedule-card">
+              <div class="tiny-metrics">
+                <span class="tiny-chip">周五：争分夺奖多日配置</span>
+                <span class="tiny-chip">周二：榜上有名结算截止</span>
+                <span class="tiny-chip">周三/四：司推司配置</span>
+              </div>
+              <div class="calendar-strip">
+                <div class="day"><div class="num">16</div><div class="sub">Mon</div></div>
+                <div class="day"><div class="num">17</div><div class="sub">Tue</div></div>
+                <div class="day"><div class="num">18</div><div class="sub">Wed</div></div>
+                <div class="day"><div class="num">19</div><div class="sub">Thu</div></div>
+                <div class="day active"><div class="num">20</div><div class="sub">Fri</div></div>
+                <div class="day"><div class="num">21</div><div class="sub">Sat</div></div>
+                <div class="day"><div class="num">22</div><div class="sub">Sun</div></div>
+              </div>
+            </div>
+            <div class="bars" style="margin-top:18px;">
+              <div class="bar-row"><span class="label-muted">争分夺奖</span><div class="bar-track"><div class="bar-fill" style="width:92%"></div></div><strong>92</strong></div>
+              <div class="bar-row"><span class="label-muted">榜上有名</span><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><strong>78</strong></div>
+              <div class="bar-row"><span class="label-muted">周期冲单奖</span><div class="bar-track"><div class="bar-fill" style="width:64%"></div></div><strong>64</strong></div>
+              <div class="bar-row"><span class="label-muted">司推司</span><div class="bar-track"><div class="bar-fill" style="width:88%"></div></div><strong>88</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="panel">
+            <div class="panel-head"><div><h3>高风险提醒</h3><p>由规则引擎和历史错误点共同生成。</p></div></div>
+            <div class="digest-list">
+              <div class="digest-item"><span class="dot" style="background:var(--danger)"></span><div><strong>周五例外规则</strong><br><span class="label-muted">争分夺奖必须跨 3 天配置，若仍按日常逻辑执行会直接漏配。</span></div></div>
+              <div class="digest-item"><span class="dot" style="background:var(--danger)"></span><div><strong>榜上有名有效期</strong><br><span class="label-muted">奖励有效期需在发放前确认完整，避免后续补发与口径核对成本上升。</span></div></div>
+              <div class="digest-item"><span class="dot" style="background:var(--warning)"></span><div><strong>司推司城市冲突</strong><br><span class="label-muted">加入司推司后需先从 3% 流水转出。</span></div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><h3>推荐问题</h3><p>最适合在执行前问清楚的规则点。</p></div></div>
+            ${faqData.map(f => `<div class="faq-card"><strong>${f.q}</strong><p>${f.a}</p></div>`).join('')}
+          </div>
+          <div class="assistant-panel">
+            <h3>Copilot Insight</h3>
+            <p>建议优先处理“跨日、多模板、需定时发布”的任务。这类任务对时点和模板一致性要求高，一旦遗漏，后续修正成本通常显著上升。</p>
+            <div class="assistant-block">
+              <h4>推荐优先顺序</h4>
+              <div class="assistant-list">
+                <div class="assistant-item">1. 争分夺奖：先做跨 3 天配置，再检查模板类型。</div>
+                <div class="assistant-item">2. 周期冲单奖：检查调休后再同步下周邮件。</div>
+                <div class="assistant-item">3. 司推司：先确认城市级别与频率，再改金额。</div>
+              </div>
+            </div>
+            <div class="assistant-input">
+              <span>✦</span>
+              <input value="今天最容易漏掉哪一步？" />
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTasks() {
+      pages.tasks.innerHTML = `
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>任务中心</h3>
+              <p>按活动域整理的执行视图，围绕任务触发、负责人、风险等级与完成进度组织日常工作。</p>
+            </div>
+            ${toneBadge('brand','Execution-first IA')}
+          </div>
+          <div class="split">
+            <div class="list-card">
+              ${tasks.map(task => `
+                <div class="list-item ${task.id === currentTaskId ? 'active' : ''}" onclick="selectTask('${task.id}')">
+                  <div class="task-icon">${task.icon}</div>
+                  <div>
+                    <strong>${task.name}</strong>
+                    <span>${task.category} · ${task.trigger} · ${task.due}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <div>
+              <div class="grid-2">
+                ${tasks.map(task => `
+                  <div class="panel" style="padding:18px;">
+                    <div class="panel-head" style="margin-bottom:12px;">
+                      <div>
+                        <h3 style="font-size:16px;">${task.icon} ${task.name}</h3>
+                        <p>${task.summary}</p>
+                      </div>
+                      ${toneBadge(task.riskTone, `${task.risk}风险`)}
+                    </div>
+                    <div class="tiny-metrics" style="margin-bottom:12px;">
+                      <span class="tiny-chip">${task.trigger}</span>
+                      <span class="tiny-chip">${task.owner}</span>
+                      <span class="tiny-chip">${task.due}</span>
+                    </div>
+                    <div class="bars">
+                      <div class="bar-row"><span class="label-muted">流程完成度</span><div class="bar-track"><div class="bar-fill" style="width:${task.progress}%"></div></div><strong>${task.progress}</strong></div>
+                      <div class="bar-row"><span class="label-muted">检查覆盖度</span><div class="bar-track"><div class="bar-fill" style="width:${task.checksScore}%"></div></div><strong>${task.checksScore}</strong></div>
+                    </div>
+                    <div style="display:flex;justify-content:flex-end;margin-top:14px;">
+                      <button class="secondary-btn" onclick="selectTask('${task.id}'); setPage('detail');">进入详情</button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDetail() {
+      const t = getCurrentTask();
+      pages.detail.innerHTML = `
+        <div class="panel" style="margin-bottom:18px;">
+          <div class="panel-head">
+            <div>
+              <h3>${t.icon} ${t.name}</h3>
+              <p>${t.summary}</p>
+            </div>
+            <div class="tiny-metrics">
+              ${toneBadge(t.statusTone, t.status)}
+              ${toneBadge(t.riskTone, `${t.risk}风险`)}
+            </div>
+          </div>
+          <div class="tiny-metrics">
+            <span class="tiny-chip">触发周期：${t.trigger}</span>
+            <span class="tiny-chip">截止时间：${t.due}</span>
+            <span class="tiny-chip">负责人：${t.owner}</span>
+            ${t.systems.map(s => `<span class="tiny-chip">${s}</span>`).join('')}
+          </div>
+        </div>
+
+        <div class="split-3">
+          <div>
+            <div class="section-block">
+              <h4>任务概况</h4>
+              <div class="meta-grid">
+                <div class="meta-item"><span>关键时点说明</span><strong>${t.deadlineHint}</strong></div>
+                <div class="meta-item"><span>当前状态</span><strong>${t.status}</strong></div>
+                <div class="meta-item"><span>流程完成度</span><strong>${t.progress}%</strong></div>
+                <div class="meta-item"><span>检查覆盖度</span><strong>${t.checksScore}%</strong></div>
+              </div>
+            </div>
+            <div class="section-block">
+              <h4>所需系统/对象</h4>
+              <div class="tiny-metrics">${t.systems.map(s => `<span class="tiny-chip">${s}</span>`).join('')}</div>
+            </div>
+            <div class="section-block">
+              <h4>高风险提醒</h4>
+              <div class="digest-list">
+                ${t.checks.filter(c => c[1] !== 'ok').slice(0,3).map(c => `<div class="digest-item"><span class="dot" style="background:${c[1] === 'block' ? 'var(--danger)' : 'var(--warning)'}"></span><div><strong>${c[0]}</strong><br><span class="label-muted">建议在提交前完成二次校验，确保规则与配置一致。</span></div></div>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><div><h3>步骤流</h3><p>基于任务链路拆解执行步骤，便于按节点推进、核对和留痕。</p></div>${toneBadge('brand','${t.steps.length} steps')}</div>
+            <div class="stepper">
+              ${t.steps.map((step, idx) => `
+                <div class="step">
+                  <div class="step-num">${idx + 1}</div>
+                  <div class="step-card">
+                    <strong>${step.title}</strong>
+                    <p>${step.desc}</p>
+                    <div class="step-bottom">${step.tags.map(tag => `<span class="tiny-chip">${tag}</span>`).join('')}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="assistant-panel">
+            <h3>AI 任务助手</h3>
+            <p>${t.aiDigest}</p>
+            <div class="assistant-block">
+              <h4>推荐先做</h4>
+              <div class="assistant-list">
+                <div class="assistant-item">先确认当前适用的周期、城市和模板分支，再进入具体配置动作。</div>
+                <div class="assistant-item">正式执行前先运行一次检查器，优先排除模板、日期与规则错配风险。</div>
+              </div>
+            </div>
+            <div class="assistant-block">
+              <h4>你可以问我</h4>
+              <div class="assistant-list">
+                ${t.aiAnswers.map(text => `<div class="assistant-item">${text}</div>`).join('')}
+              </div>
+            </div>
+            <div class="assistant-input">
+              <span>✦</span>
+              <input value="这一步最容易错在哪里？" />
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderChecker() {
+      const t = getCurrentTask();
+      pages.checker.innerHTML = `
+        <div class="panel" style="margin-bottom:18px;">
+          <div class="panel-head">
+            <div><h3>${t.name} · 配置前检查器</h3><p>将关键校验点结构化，降低日期遗漏、模板混用和城市冲突等高频配置错误。</p></div>
+            ${toneBadge('warning', `当前任务：${t.name}`)}
+          </div>
+          <div class="result-banner">
+            <strong>检测结果：存在 ${t.checks.filter(c => c[1] !== 'ok').length} 个需关注项</strong>
+            <p>系统会优先拦截阻塞性错误，例如日期覆盖不完整、有效期未填写、城市分层判断错误等。非阻塞项会保留为风险提示，供运营二次确认。</p>
+          </div>
+          <div class="check-grid">
+            <div class="check-card">
+              <h4>规则校验</h4>
+              ${t.checks.slice(0, Math.ceil(t.checks.length / 2)).map(c => `<div class="check-line"><span>${c[0]}</span>${statusPill(c[1])}</div>`).join('')}
+            </div>
+            <div class="check-card">
+              <h4>提交前完整性</h4>
+              ${t.checks.slice(Math.ceil(t.checks.length / 2)).map(c => `<div class="check-line"><span>${c[0]}</span>${statusPill(c[1])}</div>`).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><div><h3>修复建议</h3><p>基于任务类型与阻塞项，提供更清晰的处理顺序与修复路径。</p></div></div>
+            <div class="digest-list">
+              ${t.checks.filter(c => c[1] !== 'ok').map((c, i) => `
+                <div class="digest-item">
+                  <span class="dot" style="background:${c[1] === 'block' ? 'var(--danger)' : 'var(--warning)'}"></span>
+                  <div><strong>${c[0]}</strong><br><span class="label-muted">${i === 0 ? '建议优先处理该项，再继续后续发布或发奖动作。' : '建议在最终提交前完成核对，降低重复调整成本。'}</span></div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="assistant-panel">
+            <h3>Risk Review</h3>
+            <p>该检查器围绕任务链路中的关键风险节点设计，例如榜上有名侧重模板链和有效期，司推司侧重城市冲突与频率判断。</p>
+            <div class="assistant-block">
+              <h4>处理建议</h4>
+              <div class="assistant-list">
+                <div class="assistant-item">先处理阻塞项，再处理需关注项。</div>
+                <div class="assistant-item">对涉及时间、名单与模板的修改，建议保留操作留痕，便于后续核对。</div>
+                <div class="assistant-item">若任务包含通知与发奖两步，不要把两者视为一个动作。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCopilot() {
+      const t = getCurrentTask();
+      pages.copilot.innerHTML = `
+        <div class="chat-layout">
+          <div class="panel">
+            <div class="panel-head"><div><h3>推荐问题</h3><p>前置高频规则问题，减少执行过程中的重复确认与沟通成本。</p></div></div>
+            <div class="suggestions">
+              ${faqData.map((item, idx) => `<div class="suggestion" onclick="useSuggestion(${idx})">${item.q}</div>`).join('')}
+              <div class="suggestion" onclick="document.getElementById('chatInput').value='${t.name} 今天最容易错在哪一步？'">${t.name} 今天最容易错在哪一步？</div>
+            </div>
+          </div>
+
+          <div class="panel chat-box">
+            <div class="panel-head"><div><h3>AI 问答</h3><p>结合任务上下文、周期规则与风险点，给出步骤解释与后续处理建议。</p></div>${toneBadge('brand', t.name)}</div>
+            <div class="bubble user">为什么今天争分夺奖不是只配明天，而是要一次性做三天？</div>
+            <div class="bubble ai">因为当前场景按周五排班处理。按照现行规则，周五需要一次性覆盖周六、周日和周一三天的争分夺奖活动，而不是按“每天配明天”的常规逻辑执行。这里最需要关注的是周一模板与周末模板的区分。</div>
+            <div class="bubble user">如果榜上有名只发了 Push，没有回查奖励成功状态，会有什么问题？</div>
+            <div class="bubble ai">这会造成“司机收到获奖通知，但实际奖励未到账”的体验问题。榜上有名的关键不是发送通知，而是模板链处理完成后分别发即时分、预约分与券，并在结束后回查成功状态。</div>
+            <div class="chat-input">
+              <input id="chatInput" placeholder="输入规则问题、步骤差异或高频错误…" />
+              <button class="primary-btn">发送</button>
+            </div>
+          </div>
+
+          <div class="assistant-panel">
+            <h3>关联依据</h3>
+            <p>问答结果会结合规则解释、当前任务链路与后续动作建议，帮助运营快速判断下一步处理方式。</p>
+            <div class="assistant-block">
+              <h4>当前任务依据</h4>
+              <div class="assistant-list">
+                ${t.aiAnswers.map(text => `<div class="assistant-item">${text}</div>`).join('')}
+              </div>
+            </div>
+            <div class="assistant-block">
+              <h4>推荐跳转</h4>
+              <div class="assistant-list">
+                <div class="assistant-item">去任务详情页确认步骤顺序</div>
+                <div class="assistant-item">去检查器页验证日期/模板/名单</div>
+                <div class="assistant-item">去主管看板看高频错误排行</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderManager() {
+      pages.manager.innerHTML = `
+        <div class="manager-grid">
+          <div class="panel">
+            <div class="panel-head"><div><h3>主管看板</h3><p>帮助主管识别高频返工点、规则薄弱环节与团队协同风险。</p></div>${toneBadge('brand','Manager View')}</div>
+            <table class="table">
+              <thead>
+                <tr><th>任务模块</th><th>本周完成率</th><th>高频错误</th><th>返工率</th><th>状态</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>争分夺奖</td><td>88%</td><td>周五漏配 / 模板混用</td><td>13%</td><td>${toneBadge('warning','需优化')}</td></tr>
+                <tr><td>榜上有名</td><td>81%</td><td>有效期漏填 / 回查遗漏</td><td>17%</td><td>${toneBadge('danger','高关注')}</td></tr>
+                <tr><td>周期冲单奖</td><td>92%</td><td>调休未切规则</td><td>8%</td><td>${toneBadge('brand','稳定')}</td></tr>
+                <tr><td>司推司</td><td>76%</td><td>城市级别判断错误</td><td>19%</td><td>${toneBadge('danger','高关注')}</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><h3>高频问题 TOP</h3><p>适合反推培训重点和检查器优先级。</p></div></div>
+            <div class="bars">
+              <div class="bar-row"><span class="label-muted">模板类型混用</span><div class="bar-track"><div class="bar-fill" style="width:84%"></div></div><strong>84</strong></div>
+              <div class="bar-row"><span class="label-muted">日期未改完整</span><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><strong>78</strong></div>
+              <div class="bar-row"><span class="label-muted">有效期漏填</span><div class="bar-track"><div class="bar-fill" style="width:69%"></div></div><strong>69</strong></div>
+              <div class="bar-row"><span class="label-muted">城市冲突未处理</span><div class="bar-track"><div class="bar-fill" style="width:58%"></div></div><strong>58</strong></div>
+              <div class="bar-row"><span class="label-muted">调休规则漏切换</span><div class="bar-track"><div class="bar-fill" style="width:46%"></div></div><strong>46</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><div><h3>提问与求助热度</h3><p>高频提问能够反映规则理解成本，也是优化指引与校验能力的重要依据。</p></div></div>
+            ${faqData.map(item => `<div class="metric-list-card"><strong style="display:block;margin-bottom:8px;">${item.q}</strong><div class="tiny-metrics">${item.refs.map(r => `<span class="tiny-chip">${r}</span>`).join('')}</div></div>`).join('')}
+          </div>
+          <div class="assistant-panel">
+            <h3>管理层洞察</h3>
+            <p>该工作台将高风险执行节点沉淀为任务、步骤与校验能力，帮助主管同时看到完成进度、返工风险与流程优化重点。</p>
+            <div class="assistant-block">
+              <h4>后续重点</h4>
+              <div class="assistant-list">
+                <div class="assistant-item">优先强化“榜上有名有效期”和“司推司城市冲突”两项检查器规则。</div>
+                <div class="assistant-item">对争分夺奖周五模式单独做模板化引导，减少跨天漏配。</div>
+                <div class="assistant-item">将高频问题反向沉淀为推荐问答和任务内置提醒。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAll() {
+      renderDashboard();
+      renderTasks();
+      renderDetail();
+      renderChecker();
+      renderCopilot();
+      renderManager();
+    }
+
+    function populateTaskSelect() {
+      taskSelect.innerHTML = tasks.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+      taskSelect.value = currentTaskId;
+    }
+
+    function selectTask(taskId) {
+      currentTaskId = taskId;
+      taskSelect.value = currentTaskId;
+      renderAll();
+    }
+
+    function useSuggestion(index) {
+      const input = document.getElementById('chatInput');
+      if (!input) return;
+      input.value = faqData[index].q;
+      setPage('copilot');
+    }
+
+    navButtons.forEach(btn => btn.addEventListener('click', () => setPage(btn.dataset.page)));
+    taskSelect.addEventListener('change', e => selectTask(e.target.value));
+    focusDetailBtn.addEventListener('click', () => setPage('detail'));
+    focusCheckerBtn.addEventListener('click', () => setPage('checker'));
+
+    populateTaskSelect();
+    renderAll();
+    setPage('dashboard');
+
+    window.selectTask = selectTask;
+    window.setPage = setPage;
+    window.useSuggestion = useSuggestion;
+  </script>
+</body>
+</html>

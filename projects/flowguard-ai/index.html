@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowGuard AI｜异常协同与处置平台</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-2: #0a1426;
+      --panel: rgba(14, 23, 42, 0.78);
+      --panel-solid: #0f1b33;
+      --panel-2: #132544;
+      --panel-3: #182b4f;
+      --line: rgba(255,255,255,.09);
+      --line-strong: rgba(255,255,255,.16);
+      --text: #eef4ff;
+      --text-2: #d6e0f8;
+      --muted: #91a2c7;
+      --brand: #4f8cff;
+      --brand-2: #2f6df6;
+      --brand-3: rgba(79, 140, 255, .12);
+      --teal: #1ec8c8;
+      --green: #19c37d;
+      --amber: #f5b544;
+      --red: #ff6b6b;
+      --purple: #8b7eff;
+      --shadow-xl: 0 28px 70px rgba(2, 8, 23, .42);
+      --shadow-lg: 0 18px 42px rgba(2, 8, 23, .34);
+      --radius-2xl: 30px;
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --sidebar: 310px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 15%, rgba(79,140,255,.14), transparent 22%),
+        radial-gradient(circle at 86% 16%, rgba(30,200,200,.12), transparent 18%),
+        radial-gradient(circle at 18% 92%, rgba(245,181,68,.10), transparent 20%),
+        linear-gradient(180deg, #060d18 0%, #09121f 48%, #06111d 100%);
+    }
+
+    a { color: inherit; }
+    button { font: inherit; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar) 1fr;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 20px;
+      background: linear-gradient(180deg, rgba(7, 14, 28, .92), rgba(8, 16, 32, .86));
+      border-right: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .brand-card, .meta-card, .side-card {
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .brand-card {
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -30px -40px auto;
+      width: 140px;
+      height: 140px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(79,140,255,.24), transparent 62%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--brand-3);
+      color: #cfe0ff;
+      font-size: 12px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      border: 1px solid rgba(79,140,255,.18);
+    }
+
+    .eyebrow .spark {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #93c5fd, var(--brand));
+      box-shadow: 0 0 14px rgba(79, 140, 255, .45);
+    }
+
+    .brand-title {
+      margin: 14px 0 8px;
+      font-size: 26px;
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .meta-card {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .meta-title {
+      margin: 0;
+      font-size: 12px;
+      color: #a9b9da;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .meta-pill {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .meta-pill b {
+      display: block;
+      font-size: 12px;
+      color: var(--text-2);
+      margin-bottom: 4px;
+    }
+
+    .meta-pill span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .nav-wrap {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-title {
+      padding: 0 8px;
+      margin: 6px 0 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: #8394b7;
+    }
+
+    .nav {
+      overflow: auto;
+      display: grid;
+      gap: 8px;
+      padding-right: 4px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 16px;
+      cursor: pointer;
+      text-align: left;
+      transition: .22s ease;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255,255,255,.04);
+      border-color: var(--line);
+      transform: translateX(2px);
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(180deg, rgba(79,140,255,.18), rgba(79,140,255,.08));
+      border-color: rgba(79,140,255,.26);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .nav-num {
+      width: 30px;
+      height: 30px;
+      flex-shrink: 0;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.06);
+      color: #d7e4ff;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .nav-copy b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 2px;
+      font-weight: 700;
+    }
+
+    .nav-copy span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .side-card {
+      margin-top: auto;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+    }
+
+    .main {
+      padding: 26px;
+      min-width: 0;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 22px 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 380px;
+      height: 380px;
+      right: -120px;
+      top: -180px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(79,140,255,.18), transparent 58%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      margin: 14px 0 10px;
+      font-size: 34px;
+      line-height: 1.08;
+      letter-spacing: -.03em;
+    }
+
+    .hero-desc {
+      max-width: 820px;
+      color: var(--muted);
+      line-height: 1.72;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .hero-tags {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      color: #d7e4ff;
+      font-size: 12px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-width: 220px;
+      justify-content: flex-end;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .btn.primary {
+      color: white;
+      background: linear-gradient(180deg, var(--brand), var(--brand-2));
+      box-shadow: 0 12px 28px rgba(47,109,246,.28);
+    }
+
+    .btn.secondary {
+      color: var(--text);
+      background: rgba(255,255,255,.045);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .showcase {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 22px;
+      margin-top: 22px;
+      min-width: 0;
+    }
+
+    .screen-stage {
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.018));
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      box-shadow: var(--shadow-xl);
+      padding: 20px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .info-panel {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.022));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .panel h3, .panel h4 {
+      margin: 0 0 10px;
+      letter-spacing: -.02em;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 13px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .stat-box {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 20px;
+      letter-spacing: -.03em;
+      margin-bottom: 4px;
+    }
+
+    .stat-box span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .flow-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .flow-item {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 12px;
+      align-items: start;
+      font-size: 13px;
+      color: var(--text-2);
+    }
+
+    .flow-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(79,140,255,.14);
+      color: #d7e7ff;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .screen {
+      display: none;
+      animation: fade .24s ease;
+    }
+
+    .screen.active { display: block; }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .screen-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding: 0 2px;
+    }
+
+    .screen-meta h2 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -.02em;
+    }
+
+    .screen-meta p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.06);
+      font-size: 12px;
+      color: #d6e0f8;
+    }
+
+    /* Device frames */
+    .phone-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 790px;
+      padding: 8px 0 4px;
+    }
+
+    .phone-shell {
+      width: 414px;
+      padding: 14px;
+      border-radius: 44px;
+      background: linear-gradient(180deg, #0f1729, #09111f);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 40px 100px rgba(2,8,23,.55);
+      position: relative;
+    }
+
+    .phone-shell::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 108px;
+      height: 26px;
+      border-radius: 999px;
+      background: #05080f;
+      z-index: 4;
+    }
+
+    .phone-screen {
+      height: 760px;
+      border-radius: 34px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top right, rgba(79,140,255,.15), transparent 20%),
+        linear-gradient(180deg, #091321 0%, #0b1627 100%);
+      position: relative;
+    }
+
+    .mobile-page {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 22px 18px 18px;
+      gap: 16px;
+    }
+
+    .status-bar {
+      height: 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #cddbf8;
+      font-size: 12px;
+      padding: 0 4px;
+      margin-top: 8px;
+    }
+
+    .mobile-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .icon-btn, .circle-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.06);
+      color: #d9e4ff;
+    }
+
+    .mobile-title {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mobile-title h3 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: -.03em;
+    }
+
+    .mobile-title p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .glass-card {
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 12px 30px rgba(4,10,20,.24);
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .quick-item {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      min-height: 86px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .quick-item b { font-size: 14px; }
+    .quick-item span { font-size: 12px; color: var(--muted); }
+
+    .field-stack { display: grid; gap: 10px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .field {
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.035);
+      min-height: 64px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      color: #a6b5d5;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .field div {
+      color: #edf4ff;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .textarea {
+      min-height: 94px;
+      line-height: 1.6;
+      color: var(--text-2);
+    }
+
+    .chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .mchip {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(79,140,255,.12);
+      border: 1px solid rgba(79,140,255,.16);
+      color: #dce8ff;
+      font-size: 12px;
+    }
+
+    .bottom-actions {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      gap: 10px;
+    }
+
+    .m-btn {
+      border: 0;
+      border-radius: 18px;
+      padding: 15px 14px;
+      font-weight: 700;
+      color: var(--text);
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .m-btn.primary {
+      background: linear-gradient(180deg, var(--brand), var(--brand-2));
+      color: #fff;
+      box-shadow: 0 16px 34px rgba(47,109,246,.28);
+      border-color: transparent;
+    }
+
+    .result-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(79,140,255,.16), rgba(79,140,255,.05));
+      border: 1px solid rgba(79,140,255,.18);
+    }
+
+    .score-ring {
+      width: 88px;
+      height: 88px;
+      border-radius: 999px;
+      background: conic-gradient(var(--brand) 0 87%, rgba(255,255,255,.08) 87% 100%);
+      display: grid;
+      place-items: center;
+      margin-left: auto;
+      position: relative;
+    }
+
+    .score-ring::after {
+      content: "";
+      width: 66px;
+      height: 66px;
+      border-radius: 999px;
+      background: #0d1729;
+      position: absolute;
+    }
+
+    .score-ring b {
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+    }
+
+    .suggestion-list { display: grid; gap: 10px; }
+    .suggestion {
+      padding: 13px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 12px;
+      position: relative;
+      margin-top: 4px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 13px;
+      width: 2px;
+      background: rgba(255,255,255,.08);
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--brand), var(--brand-2));
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(47,109,246,.3);
+    }
+
+    .timeline-box {
+      padding: 12px 13px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    /* Desktop */
+    .desk-shell {
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.09);
+      box-shadow: 0 40px 100px rgba(2,8,23,.5);
+      background: #0b1426;
+    }
+
+    .desk-topbar {
+      height: 62px;
+      background: rgba(9,16,31,.95);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+    }
+
+    .traffic { display: flex; gap: 8px; }
+    .traffic span {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: block;
+    }
+
+    .desk-layout {
+      display: grid;
+      grid-template-columns: 228px minmax(0, 1fr);
+      min-height: 730px;
+    }
+
+    .desk-side {
+      background: linear-gradient(180deg, rgba(8,14,27,.94), rgba(10,18,33,.92));
+      border-right: 1px solid rgba(255,255,255,.05);
+      padding: 18px 14px;
+      display: grid;
+      align-content: start;
+      gap: 14px;
+    }
+
+    .desk-logo {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(79,140,255,.1);
+      border: 1px solid rgba(79,140,255,.14);
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+
+    .desk-nav { display: grid; gap: 8px; }
+    .desk-nav-item {
+      padding: 11px 12px;
+      border-radius: 14px;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      font-size: 13px;
+    }
+
+    .desk-nav-item.active {
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.06);
+    }
+
+    .desk-main {
+      padding: 18px;
+      background:
+        radial-gradient(circle at top right, rgba(79,140,255,.08), transparent 18%),
+        linear-gradient(180deg, #0c1527 0%, #0c172b 100%);
+      min-width: 0;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .toolbar h3 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+
+    .toolbar p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .toolbar-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .ghost-btn, .solid-btn, .tiny-btn {
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .solid-btn {
+      background: linear-gradient(180deg, var(--brand), var(--brand-2));
+      border-color: transparent;
+      box-shadow: 0 10px 26px rgba(47,109,246,.28);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .filter-pill {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      color: #d6e0f8;
+      font-size: 12px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .kpi-card {
+      padding: 16px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.024));
+      border: 1px solid rgba(255,255,255,.07);
+      box-shadow: 0 14px 34px rgba(3,10,21,.2);
+    }
+
+    .kpi-card .small {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .kpi-card strong {
+      font-size: 28px;
+      letter-spacing: -.04em;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .delta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(25,195,125,.12);
+      color: #b9f3d7;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 14px;
+    }
+
+    .grid-col { display: grid; gap: 14px; }
+
+    .desk-card {
+      padding: 16px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.024));
+      border: 1px solid rgba(255,255,255,.06);
+      min-width: 0;
+    }
+
+    .desk-card h4 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      letter-spacing: -.02em;
+    }
+
+    .chart-box {
+      height: 220px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.012));
+      border: 1px solid rgba(255,255,255,.04);
+      display: flex;
+      align-items: flex-end;
+      padding: 18px;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 95%, rgba(255,255,255,.04) 95%), linear-gradient(90deg, transparent 90%, rgba(255,255,255,.03) 90%);
+      background-size: 100% 46px, 96px 100%;
+      pointer-events: none;
+    }
+
+    .bar {
+      width: 34px;
+      border-radius: 14px 14px 8px 8px;
+      background: linear-gradient(180deg, rgba(79,140,255,.88), rgba(47,109,246,.35));
+      border: 1px solid rgba(255,255,255,.08);
+      position: relative;
+      z-index: 1;
+    }
+
+    .line-chart {
+      height: 220px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.04);
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.012));
+      padding: 12px;
+    }
+
+    .mini-list { display: grid; gap: 10px; }
+    .mini-row {
+      padding: 12px 13px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .table-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead th {
+      text-align: left;
+      color: #9fb0d2;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.02);
+    }
+
+    tbody td {
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      color: var(--text-2);
+      vertical-align: top;
+    }
+
+    tbody tr:hover { background: rgba(255,255,255,.02); }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .tag.blue { background: rgba(79,140,255,.12); color: #d6e7ff; border-color: rgba(79,140,255,.16); }
+    .tag.green { background: rgba(25,195,125,.12); color: #b7f2d4; border-color: rgba(25,195,125,.16); }
+    .tag.amber { background: rgba(245,181,68,.12); color: #ffe4b2; border-color: rgba(245,181,68,.16); }
+    .tag.red { background: rgba(255,107,107,.12); color: #ffd2d2; border-color: rgba(255,107,107,.16); }
+    .tag.purple { background: rgba(139,126,255,.12); color: #ddd7ff; border-color: rgba(139,126,255,.16); }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1.1fr .95fr;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .evidence {
+      height: 118px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.05);
+      background:
+        linear-gradient(135deg, rgba(79,140,255,.16), rgba(255,255,255,.02)),
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.04));
+      display: grid;
+      place-items: center;
+      color: #cfe0ff;
+      font-size: 12px;
+    }
+
+    .detail-stack, .action-list, .qa-list, .task-list { display: grid; gap: 12px; }
+
+    .detail-box, .action-item, .qa-item, .task-item {
+      padding: 13px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .detail-box small, .action-item small, .qa-item small, .task-item small {
+      display: block;
+      color: #99abcf;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .progress {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      overflow: hidden;
+    }
+
+    .progress > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--brand), #78b4ff);
+    }
+
+    .search-line {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .word-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .word {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      color: #d8e3fa;
+    }
+
+    .word.big { font-size: 18px; background: rgba(79,140,255,.12); border-color: rgba(79,140,255,.16); }
+    .word.mid { font-size: 15px; }
+    .word.small { font-size: 12px; color: var(--muted); }
+
+    .cover-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+      padding: 0 4px;
+    }
+
+    @media (max-width: 1280px) {
+      .showcase { grid-template-columns: 1fr; }
+      .info-panel { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    }
+
+    @media (max-width: 1100px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: relative; height: auto; }
+      .hero { flex-direction: column; }
+      .content-grid, .detail-grid, .two-col { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .info-panel { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .main { padding: 16px; }
+      .screen-stage { padding: 12px; }
+      .phone-shell { width: 100%; max-width: 414px; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .desk-layout { grid-template-columns: 1fr; }
+      .desk-side { display: none; }
+      .meta-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand-card">
+        <span class="eyebrow"><span class="spark"></span> Exception Operations Platform</span>
+        <h1 class="brand-title">FlowGuard AI</h1>
+        <p class="brand-sub">面向厂内物流异常处理的协同平台方案，覆盖异常上报、AI 初判、SOP 指引、责任流转与复盘分析。</p>
+      </div>
+
+      <div class="meta-card">
+        <p class="meta-title">项目结构</p>
+        <div class="meta-grid">
+          <div class="meta-pill"><b>3 个移动端场景</b><span>上报 / 初判 / SOP 指引</span></div>
+          <div class="meta-pill"><b>5 个 Web 页面</b><span>看板 / 列表 / 详情 / 知识库 / 复盘</span></div>
+          <div class="meta-pill"><b>核心用户</b><span>物流 / SQE / 主管</span></div>
+          <div class="meta-pill"><b>业务闭环</b><span>上报、判定、流转、复盘</span></div>
+        </div>
+      </div>
+
+      <div class="nav-wrap">
+        <div class="nav-title">Screens</div>
+        <div class="nav" id="nav"></div>
+      </div>
+
+      <div class="side-card">
+        <div class="legend-row"><span class="legend-dot" style="background:var(--brand)"></span> 蓝色用于 AI 建议与关键路径</div>
+        <div class="legend-row"><span class="legend-dot" style="background:var(--red)"></span> 红色用于超时与高风险异常</div>
+        <div class="legend-row"><span class="legend-dot" style="background:var(--green)"></span> 绿色用于完成与闭环状态</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="hero">
+        <div>
+          <span class="eyebrow"><span class="spark"></span> Cross-role Workflow</span>
+          <h2 class="hero-title">围绕异常识别、责任协同与处置闭环构建统一作业平台</h2>
+          <p class="hero-desc">方案覆盖移动端上报、AI 初判、SOP 指引，以及 Web 端看板、工单、知识库和复盘分析，重点呈现一线录入效率、跨角色协同、风险可视化与持续改进能力。</p>
+          <div class="hero-tags">
+            <span class="chip">异常上报</span>
+            <span class="chip">AI 初判</span>
+            <span class="chip">SOP 知识库</span>
+            <span class="chip">工单流转</span>
+            <span class="chip">异常复盘</span>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <button class="btn primary" id="nextBtn">下一个页面</button>
+          <button class="btn secondary" id="toggleInfoBtn">切换侧栏</button>
+        </div>
+      </section>
+
+      <section class="showcase">
+        <div class="screen-stage" id="screenStage"></div>
+        <aside class="info-panel" id="infoPanel">
+          <div class="panel">
+            <h3>方案重点</h3>
+            <p>围绕异常处理闭环梳理移动端与后台协同场景，突出信息层级、处理路径、风险提示和管理视角，帮助不同角色在同一平台内完成协作。</p>
+            <div class="stats">
+              <div class="stat-box"><strong>8</strong><span>核心页面</span></div>
+              <div class="stat-box"><strong>3</strong><span>移动端场景</span></div>
+              <div class="stat-box"><strong>5</strong><span>后台管理页面</span></div>
+              <div class="stat-box"><strong>1</strong><span>完整异常闭环</span></div>
+            </div>
+          </div>
+          <div class="panel" id="infoContent">
+            <h3>页面重点</h3>
+            <p>随页面切换同步查看当前场景的产品目标、关键交互与业务价值。</p>
+            <div class="flow-list" id="flowList"></div>
+          </div>
+          <div class="panel">
+            <h4>查看路径</h4>
+            <p>可重点查看移动端 AI 初判、Web 工单详情与异常复盘三类核心页面，理解异常识别、流转决策与管理复盘之间的衔接关系。</p>
+          </div>
+        </aside>
+      </section>
+      <p class="cover-note">覆盖移动端作业入口与 Web 端管理视图，用于呈现异常协同平台的核心流程与角色分工。</p>
+    </main>
+  </div>
+
+  <script>
+    const screens = [
+      {
+        id: 'mobile-report',
+        title: '移动端｜异常上报首页',
+        subtitle: '1 分钟内完成标准化上报，降低一线填写成本。',
+        audience: '物流一线',
+        info: [
+          '把扫码、拍照、语音和手动填写做成同一入口，减少用户在多系统之间跳转。',
+          '表单区只保留最关键字段，降低现场录入门槛，同时预留 AI 初判所需的上下文。',
+          '底部双按钮用来区分“保存草稿”和“提交 AI 初判”，符合真实作业场景。'
+        ],
+        html: `
+          <section class="screen active">
+            <div class="screen-meta">
+              <div>
+                <h2>移动端｜异常上报首页</h2>
+                <p>现场扫码、拍照、补描述，进入 AI 初判前的标准化采集入口。</p>
+              </div>
+              <div class="pill-group"><span class="pill">Mobile</span><span class="pill">上报效率</span></div>
+            </div>
+            <div class="phone-wrap">
+              <div class="phone-shell">
+                <div class="phone-screen">
+                  <div class="mobile-page">
+                    <div class="status-bar"><span>9:41</span><span>5G · 82%</span></div>
+                    <div class="mobile-topbar">
+                      <div class="icon-btn">←</div>
+                      <div class="mobile-title">
+                        <h3>异常上报</h3>
+                        <p>扫码录入零件信息，上传异常照片并生成 AI 初判。</p>
+                      </div>
+                      <div class="circle-icon">⟳</div>
+                    </div>
+
+                    <div class="glass-card">
+                      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <strong>快速录入</strong><span class="tag blue">推荐流程</span>
+                      </div>
+                      <div class="quick-grid">
+                        <div class="quick-item"><b>扫码录入</b><span>自动带出零件号、批次与库位</span></div>
+                        <div class="quick-item"><b>拍照上传</b><span>识别包装破损、标签异常、外观损伤</span></div>
+                        <div class="quick-item"><b>语音描述</b><span>口述异常现象，自动转写文本</span></div>
+                        <div class="quick-item"><b>手动填写</b><span>适合补充字段或录入历史问题</span></div>
+                      </div>
+                    </div>
+
+                    <div class="glass-card">
+                      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <strong>基础信息</strong><span style="color:var(--muted);font-size:12px;">已预填 4 项</span>
+                      </div>
+                      <div class="field-stack">
+                        <div class="field-row">
+                          <div class="field"><label>零件号</label><div>FG-AX21-8893</div></div>
+                          <div class="field"><label>批次</label><div>2026-03-20 / B04</div></div>
+                        </div>
+                        <div class="field-row">
+                          <div class="field"><label>数量</label><div>24 件</div></div>
+                          <div class="field"><label>发现位置</label><div>收货暂存区 A3</div></div>
+                        </div>
+                        <div class="field"><label>异常描述</label><div class="textarea">外箱右下角破损，标签编码与送货单不一致，怀疑存在错料风险，已影响后续上架。</div></div>
+                        <div class="chip-row">
+                          <span class="mchip">包装破损</span>
+                          <span class="mchip">标签异常</span>
+                          <span class="mchip">疑似错料</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bottom-actions">
+                      <button class="m-btn">保存草稿</button>
+                      <button class="m-btn primary">提交 AI 初判</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>`
+      },
+      {
+        id: 'mobile-ai',
+        title: '移动端｜AI 初判结果页',
+        subtitle: '让一线人员立刻知道问题类型、风险等级和下一步动作。',
+        audience: '物流一线 / SQE',
+        info: [
+          '把 AI 输出改成结构化结果卡，而不是聊天气泡，更符合工厂场景对“可执行结论”的期待。',
+          '置信度、风险等级和建议动作同屏展示，帮助用户快速决定是建单还是转人工复核。',
+          '通过结构化输出问题类型、风险等级与后续动作，帮助一线人员更快进入正确处理链路。'
+        ],
+        html: `
+          <section class="screen active">
+            <div class="screen-meta">
+              <div>
+                <h2>移动端｜AI 初判结果页</h2>
+                <p>让用户立刻知道“这是什么问题、风险多大、下一步做什么”。</p>
+              </div>
+              <div class="pill-group"><span class="pill">AI 输出</span><span class="pill">关键决策页</span></div>
+            </div>
+            <div class="phone-wrap">
+              <div class="phone-shell">
+                <div class="phone-screen">
+                  <div class="mobile-page">
+                    <div class="status-bar"><span>9:42</span><span>5G · 82%</span></div>
+                    <div class="mobile-topbar">
+                      <div class="icon-btn">←</div>
+                      <div class="mobile-title">
+                        <h3>AI 初判结果</h3>
+                        <p>根据图片、描述与历史规则，输出疑似异常类别与建议路径。</p>
+                      </div>
+                      <div class="circle-icon">⋯</div>
+                    </div>
+
+                    <div class="result-card">
+                      <div style="display:flex;gap:16px;align-items:center;">
+                        <div>
+                          <div class="tag amber" style="margin-bottom:10px;">高风险异常</div>
+                          <h3 style="margin:0 0 6px;font-size:24px;">疑似料废</h3>
+                          <p style="margin:0;color:var(--text-2);line-height:1.6;font-size:13px;max-width:200px;">综合图像识别与文本描述，当前更可能属于需 SQE 确认的不合格来料问题。</p>
+                        </div>
+                        <div class="score-ring"><b>87%</b></div>
+                      </div>
+                    </div>
+
+                    <div class="glass-card">
+                      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <strong>AI 识别依据</strong><span style="color:var(--muted);font-size:12px;">可解释输出</span>
+                      </div>
+                      <div class="suggestion-list">
+                        <div class="suggestion"><div><b>图像识别</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">检测到包装破损、标签模糊与外箱变形。</div></div><span class="tag blue">图片</span></div>
+                        <div class="suggestion"><div><b>文本识别</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">“标签编码与送货单不一致”提升错料 / 料废判断权重。</div></div><span class="tag purple">文本</span></div>
+                        <div class="suggestion"><div><b>流程建议</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">先联系 SQE 判定，再准备移交不良品库。</div></div><span class="tag green">动作</span></div>
+                      </div>
+                    </div>
+
+                    <div class="glass-card">
+                      <strong style="display:block;margin-bottom:12px;">后续处理</strong>
+                      <div class="suggestion-list">
+                        <div class="suggestion"><div><b>1. 联系 SQE</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">确认是否属于不合格来料，补齐判定单据。</div></div><span>→</span></div>
+                        <div class="suggestion"><div><b>2. 补充证据</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">补充标签近景和送货单照片，减少后续退库争议。</div></div><span>→</span></div>
+                      </div>
+                    </div>
+
+                    <div class="bottom-actions">
+                      <button class="m-btn">转人工复核</button>
+                      <button class="m-btn primary">一键建单并查看 SOP</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>`
+      },
+      {
+        id: 'mobile-sop',
+        title: '移动端｜SOP 指引页',
+        subtitle: '把分散 SOP 变成新人也能直接执行的步骤流。',
+        audience: '物流一线',
+        info: [
+          '时间线结构承接“判定—移交—退库/报废—破拆”的业务链路，便于一线按节点执行。',
+          'AI 在该页面中的作用是将适用 SOP 与当前节点对应，减少错用流程的风险。',
+          '页面重点在于把复杂处理要求拆解为可理解、可执行的连续步骤。'
+        ],
+        html: `
+          <section class="screen active">
+            <div class="screen-meta">
+              <div>
+                <h2>移动端｜SOP 指引页</h2>
+                <p>将分散处理要求整理为连续步骤，降低一线在异常场景下的判断成本。</p>
+              </div>
+              <div class="pill-group"><span class="pill">知识库</span><span class="pill">SOP 推荐</span></div>
+            </div>
+            <div class="phone-wrap">
+              <div class="phone-shell">
+                <div class="phone-screen">
+                  <div class="mobile-page">
+                    <div class="status-bar"><span>9:43</span><span>5G · 82%</span></div>
+                    <div class="mobile-topbar">
+                      <div class="icon-btn">←</div>
+                      <div class="mobile-title">
+                        <h3>处理指引</h3>
+                        <p>当前适用 SOP：不合格品零件处理规定 · 料废流程</p>
+                      </div>
+                      <div class="circle-icon">⤴</div>
+                    </div>
+
+                    <div class="glass-card">
+                      <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                          <strong>SOP 版本</strong>
+                          <div style="margin-top:6px;color:var(--muted);font-size:12px;">V1.0 · 当前节点：SQE 判定后移交流程</div>
+                        </div>
+                        <span class="tag blue">推荐中</span>
+                      </div>
+                    </div>
+
+                    <div class="glass-card" style="flex:1;display:flex;flex-direction:column;">
+                      <strong style="display:block;margin-bottom:12px;">标准处理步骤</strong>
+                      <div class="timeline" style="flex:1;">
+                        <div class="timeline-item"><div class="timeline-dot">1</div><div class="timeline-box"><b>SQE 判定不合格</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">确认是否属于料废，并生成判定单据。</div></div></div>
+                        <div class="timeline-item"><div class="timeline-dot">2</div><div class="timeline-box"><b>物流移交不良品库</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">携带单据完成移交，留存照片与接收记录。</div></div></div>
+                        <div class="timeline-item"><div class="timeline-dot">3</div><div class="timeline-box"><b>等待退库通知</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">供应商授权人员到场签字确认后，执行退厂。</div></div></div>
+                        <div class="timeline-item"><div class="timeline-dot">4</div><div class="timeline-box"><b>超期触发强制报废</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">若拒签到场且超期，由生管发起强制报废流程。</div></div></div>
+                      </div>
+                    </div>
+
+                    <div class="glass-card">
+                      <strong style="display:block;margin-bottom:10px;">需准备材料</strong>
+                      <div class="chip-row">
+                        <span class="mchip">SQE 判定单</span>
+                        <span class="mchip">异常照片</span>
+                        <span class="mchip">零件信息</span>
+                        <span class="mchip">签字记录</span>
+                      </div>
+                    </div>
+
+                    <div class="bottom-actions">
+                      <button class="m-btn">发给责任人</button>
+                      <button class="m-btn primary">进入建单</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>`
+      },
+      {
+        id: 'web-dashboard',
+        title: 'Web｜异常总览看板',
+        subtitle: '让主管用一屏看懂“今天到底发生了什么”。',
+        audience: '主管 / 经理',
+        info: [
+          '看板页聚焦 KPI、趋势、异常类型分布与 AI 摘要，帮助主管快速判断整体运行状态。',
+          'AI 摘要用于提炼主要风险来源、卡点节点与优先动作，减少管理层的汇总成本。',
+          '页面强调从异常数量进一步延伸到处理时效与改进重点的综合判断。'
+        ],
+        html: `
+          <section class="screen active">
+            <div class="screen-meta">
+              <div>
+                <h2>Web｜异常总览看板</h2>
+                <p>主管视角的全局首页：看异常量、看时效、看卡点、看趋势。</p>
+              </div>
+              <div class="pill-group"><span class="pill">Dashboard</span><span class="pill">Manager View</span></div>
+            </div>
+            <div class="desk-shell">
+              <div class="desk-topbar">
+                <div class="traffic"><span style="background:#ff6b6b"></span><span style="background:#f5b544"></span><span style="background:#19c37d"></span></div>
+                <div style="color:var(--muted);font-size:13px;">FlowGuard AI / Overview</div>
+                <div class="tag blue">实时概览</div>
+              </div>
+              <div class="desk-layout">
+                <aside class="desk-side">
+                  <div class="desk-logo">FlowGuard AI</div>
+                  <div class="desk-nav">
+                    <div class="desk-nav-item active">异常总览</div>
+                    <div class="desk-nav-item">工单列表</div>
+                    <div class="desk-nav-item">工单详情</div>
+                    <div class="desk-nav-item">SOP 知识库</div>
+                    <div class="desk-nav-item">异常复盘</div>
+                  </div>
+                </aside>
+                <div class="desk-main">
+                  <div class="toolbar">
+                    <div>
+                      <h3>异常总览看板</h3>
+                      <p>基于今日异常、处理时长与 AI 分析结果的现场运营视图。</p>
+                    </div>
+                    <div class="toolbar-actions">
+                      <button class="ghost-btn">导出周报</button>
+                      <button class="solid-btn">查看超时工单</button>
+                    </div>
+                  </div>
+                  <div class="filter-row">
+                    <div class="filter-pill">时间：今天</div>
+                    <div class="filter-pill">异常类型：全部</div>
+                    <div class="filter-pill">责任部门：全部</div>
+                    <div class="filter-pill">仅看超时：关闭</div>
+                  </div>
+                  <div class="kpi-grid">
+                    <div class="kpi-card"><span class="small">今日新增异常</span><strong>28</strong><span class="delta">↑ 12% vs 昨日</span></div>
+                    <div class="kpi-card"><span class="small">待处理工单</span><strong>9</strong><span class="delta" style="background:rgba(245,181,68,.12);color:#ffe3b3;">3 单接近 SLA</span></div>
+                    <div class="kpi-card"><span class="small">超时工单</span><strong>3</strong><span class="delta" style="background:rgba(255,107,107,.12);color:#ffd5d5;">集中在 SQE 环节</span></div>
+                    <div class="kpi-card"><span class="small">平均闭环时长</span><strong>6.4h</strong><span class="delta">↓ 18% vs 上周</span></div>
+                  </div>
+                  <div class="content-grid">
+                    <div class="grid-col">
+                      <div class="desk-card">
+                        <h4>异常趋势</h4>
+                        <div class="line-chart">
+                          <svg viewBox="0 0 760 220" width="100%" height="100%" aria-hidden="true">
+                            <defs>
+                              <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="rgba(79,140,255,.55)"/>
+                                <stop offset="100%" stop-color="rgba(79,140,255,0)"/>
+                              </linearGradient>
+                            </defs>
+                            <path d="M20 170 C70 160, 90 110, 150 118 S240 168, 300 122 S410 64, 470 92 S580 180, 640 122 S700 76, 740 86" fill="none" stroke="#6fa7ff" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M20 170 C70 160, 90 110, 150 118 S240 168, 300 122 S410 64, 470 92 S580 180, 640 122 S700 76, 740 86 L740 220 L20 220 Z" fill="url(#area)"/>
+                            <g fill="#d8e7ff">
+                              <circle cx="150" cy="118" r="5"/><circle cx="470" cy="92" r="5"/><circle cx="740" cy="86" r="5"/>
+                            </g>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="desk-card">
+                        <h4>责任部门处理效率</h4>
+                        <div class="chart-box">
+                          <div class="bar" style="height:64%"></div>
+                          <div class="bar" style="height:84%"></div>
+                          <div class="bar" style="height:55%"></div>
+                          <div class="bar" style="height:92%"></div>
+                          <div class="bar" style="height:48%"></div>
+                          <div class="bar" style="height:78%"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="grid-col">
+                      <div class="desk-card">
+                        <h4>异常类型分布</h4>
+                        <div class="mini-list">
+                          <div class="mini-row"><span>包装 / 标签异常</span><span class="tag blue">41%</span></div>
+                          <div class="mini-row"><span>短缺 / 错料</span><span class="tag amber">27%</span></div>
+                          <div class="mini-row"><span>不合格品处理</span><span class="tag purple">19%</span></div>
+                          <div class="mini-row"><span>其他</span><span class="tag green">13%</span></div>
+                        </div>
+                      </div>
+                      <div class="desk-card">
+                        <h4>AI 周报摘要</h4>
+                        <div class="mini-list">
+                          <div class="mini-row"><span>主要增长来源</span><span>标签异常、短缺类问题</span></div>
+                          <div class="mini-row"><span>最易超时节点</span><span>待 SQE 确认</span></div>
+                          <div class="mini-row"><span>本周建议动作</span><span>上报必传照片 + 标签核对前置</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>`
+      },
+      {
+        id: 'web-list',
+        title: 'Web｜异常工单列表页',
+        subtitle: '让主管快速筛工单、看状态、进入详情。',
+        audience: '主管 / 协同角色',
+        info: [
+          '列表页最重要的是“可扫读”：类型、节点、责任人、SLA 需要一眼就能找到。',
+          '状态标签统一表达流转状态与紧急程度，便于跨角色快速扫读。',
+          '列表页保留批量分配、筛选与 SLA 视角，用于支撑主管的日常分派与跟进。'
+        ],
+        html: `
+          <section class="screen active">
+            <div class="screen-meta">
+              <div>
+                <h2>Web｜异常工单列表页</h2>
+                <p>按类型、状态、责任人、SLA 快速筛选工单。</p>
+              </div>
+              <div class="pill-group"><span class="pill">Table</span><span class="pill">SLA Tracking</span></div>
+            </div>
+            <div class="desk-shell">
+              <div class="desk-topbar">
+                <div class="traffic"><span style="background:#ff6b6b"></span><span style="background:#f5b544"></span><span style="background:#19c37d"></span></div>
+                <div style="color:var(--muted);font-size:13px;">FlowGuard AI / Tickets</div>
+                <div class="tag green">协同中</div>
+              </div>
+              <div class="desk-layout">
+                <aside class="desk-side">
+                  <div class="desk-logo">FlowGuard AI</div>
+                  <div class="desk-nav">
+                    <div class="desk-nav-item">异常总览</div>
+                    <div class="desk-nav-item active">工单列表</div>
+                    <div class="desk-nav-item">工单详情</div>
+                    <div class="desk-nav-item">SOP 知识库</div>
+                    <div class="desk-nav-item">异常复盘</div>
+                  </div>
+                </aside>
+                <div class="desk-main">
+                  <div class="toolbar">
+                    <div>
+                      <h3>异常工单</h3>
+                      <p>FG-20260320 系列工单，支持按节点、类型和责任人快速筛选。</p>
+                    </div>
+                    <div class="toolbar-actions">
+                      <button class="ghost-btn">批量分配</button>
+                      <button class="solid-btn">导出报表</button>
+                    </div>
+                  </div>
+                  <div class="filter-row">
+                    <div class="filter-pill">搜索：工单号 / 零件号 / 提交人</div>
+                    <div class="filter-pill">状态：全部</div>
+                    <div class="filter-pill">紧急程度：中高</div>
+                    <div class="filter-pill">仅看超时：开启</div>
+                  </div>
+                  <div class="desk-card table-card">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>工单编号</th><th>零件号</th><th>异常类型</th><th>当前节点</th><th>责任人</th><th>SLA</th><th>状态</th><th>操作</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td>FG-20260320-0012</td><td>AX21-8893</td><td><span class="tag purple">疑似料废</span></td><td>待 SQE 确认</td><td>李工</td><td>2h 13m</td><td><span class="tag red">已超时</span></td><td>查看详情</td></tr>
+                        <tr><td>FG-20260320-0015</td><td>BT33-2041</td><td><span class="tag amber">标签异常</span></td><td>待物流移交</td><td>王楠</td><td>5h 40m</td><td><span class="tag amber">处理中</span></td><td>查看详情</td></tr>
+                        <tr><td>FG-20260320-0018</td><td>QM78-5620</td><td><span class="tag blue">短缺</span></td><td>待责任部门处理</td><td>赵源</td><td>1h 02m</td><td><span class="tag amber">接近 SLA</span></td><td>查看详情</td></tr>
+                        <tr><td>FG-20260320-0020</td><td>FG89-1290</td><td><span class="tag green">已闭环</span></td><td>归档完成</td><td>陈凯</td><td>—</td><td><span class="tag green">已完成</span></td><td>查看详情</td></tr>
+                        <tr><td>FG-20260320-0023</td><td>LP10-4328</td><td><span class="tag purple">工废</span></td><td>待破拆</td><td>财务联络</td><td>8h 11m</td><td><span class="tag blue">流转中</span></td><td>查看详情</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>`
+      },
+      {
+        id: 'web-detail',
+        title: 'Web｜工单详情页',
+        subtitle: '把异常信息、时间线、AI 建议与处理动作放在同一页。',
+        audience: '主管 / SQE / 物流',
+        info: [
+          '工单详情页集中呈现异常证据、流转状态、AI 建议与处置动作，是协同决策的核心页面。',
+          '三栏布局分别承载证据、流程与建议，便于不同角色在同一页面完成判断与协作。',
+          '页面重点在于减少跨系统切换，让处理依据与下一步动作保持同屏可见。'
+        ],
+        html: `
+          <section class="screen active">
+            <div class="screen-meta">
+              <div>
+                <h2>Web｜工单详情页</h2>
+                <p>同屏查看异常详情、责任流转、AI 建议与闭环动作。</p>
+              </div>
+              <div class="pill-group"><span class="pill">Core Page</span><span class="pill">Cross-role Collaboration</span></div>
+            </div>
+            <div class="desk-shell">
+              <div class="desk-topbar">
+                <div class="traffic"><span style="background:#ff6b6b"></span><span style="background:#f5b544"></span><span style="background:#19c37d"></span></div>
+                <div style="color:var(--muted);font-size:13px;">FlowGuard AI / Ticket Detail</div>
+                <div class="tag red">高风险</div>
+              </div>
+              <div class="desk-layout">
+                <aside class="desk-side">
+                  <div class="desk-logo">FlowGuard AI</div>
+                  <div class="desk-nav">
+                    <div class="desk-nav-item">异常总览</div>
+                    <div class="desk-nav-item">工单列表</div>
+                    <div class="desk-nav-item active">工单详情</div>
+                    <div class="desk-nav-item">SOP 知识库</div>
+                    <div class="desk-nav-item">异常复盘</div>
+                  </div>
+                </aside>
+                <div class="desk-main">
+                  <div class="toolbar">
+                    <div>
+                      <h3>FG-20260320-0012</h3>
+                      <p>疑似料废 · 收货暂存区 A3 · 提交于 09:32</p>
+                    </div>
+                    <div class="toolbar-actions">
+                      <button class="ghost-btn">补充附件</button>
+                      <button class="ghost-btn">转派</button>
+                      <button class="solid-btn">确认分类</button>
+                    </div>
+                  </div>
+                  <div class="detail-grid">
+                    <div class="desk-card">
+                      <h4>异常信息</h4>
+                      <div class="detail-stack">
+                        <div class="detail-box"><small>零件信息</small>AX21-8893 / 动力总成支架 / 批次 B04 / 24 件</div>
+                        <div class="detail-box"><small>异常描述</small>外箱破损，标签编码与送货单不一致，怀疑存在错料风险，影响后续上架。</div>
+                        <div class="detail-box"><small>证据附件</small>
+                          <div class="evidence-grid" style="margin-top:10px;">
+                            <div class="evidence">包装破损图</div>
+                            <div class="evidence">标签近景图</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="desk-card">
+                      <h4>流转时间线</h4>
+                      <div class="timeline">
+                        <div class="timeline-item"><div class="timeline-dot">✓</div><div class="timeline-box"><b>已提交</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">09:32 · 物流一线提交异常记录</div></div></div>
+                        <div class="timeline-item"><div class="timeline-dot">AI</div><div class="timeline-box"><b>AI 初判完成</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">09:33 · 输出“疑似料废”，置信度 87%</div></div></div>
+                        <div class="timeline-item"><div class="timeline-dot">2</div><div class="timeline-box"><b>待 SQE 确认</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">当前节点已停留 2h13m，接近超时。</div></div></div>
+                        <div class="timeline-item"><div class="timeline-dot">3</div><div class="timeline-box"><b>移交不良品库</b><div style="margin-top:6px;color:var(--muted);font-size:12px;">待完成判定后自动创建移交子任务。</div></div></div>
+                      </div>
+                    </div>
+                    <div class="desk-card">
+                      <h4>AI 处理建议</h4>
+                      <div class="action-list">
+                        <div class="action-item"><small>AI 初判</small>当前更可能属于不合格来料，优先进入 SQE 复核更有利于明确责任与去向。</div>
+                        <div class="action-item"><small>风险提醒</small>若 30 分钟内未完成复核，可能影响线边补货时效。</div>
+                        <div class="action-item"><small>推荐 SOP</small>不合格品零件处理规定 · 料废流程 · 当前节点：判定后移交。</div>
+                        <div class="action-item"><small>处理动作</small>补充送货单与标签对应关系照片，减少退库争议。</div>
+                        <div class="action-item"><small>进度评分</small><div class="progress" style="margin-top:10px;"><span style="width:68%"></span></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>`
+      },
+      {
+        id: 'web-knowledge',
+        title: 'Web｜SOP 知识库页',
+        subtitle: '让 SOP 可搜索、可问答、可直接关联工单。',
+        audience: '全角色',
+        info: [
+          '知识库页同时承载搜索、问答与工单关联，帮助用户在处理过程中快速定位适用规则。',
+          '页面重点在于连接知识资产与业务场景，而不仅是展示静态文档目录。',
+          'AI 回答用于辅助理解与定位流程，关键节点仍保留人工确认与责任判定。'
+        ],
+        html: `
+          <section class="screen active">
+            <div class="screen-meta">
+              <div>
+                <h2>Web｜SOP 知识库页</h2>
+                <p>把分散 SOP 文档变成可问答、可引用、可跳转的操作知识库。</p>
+              </div>
+              <div class="pill-group"><span class="pill">Knowledge</span><span class="pill">Q&A</span></div>
+            </div>
+            <div class="desk-shell">
+              <div class="desk-topbar">
+                <div class="traffic"><span style="background:#ff6b6b"></span><span style="background:#f5b544"></span><span style="background:#19c37d"></span></div>
+                <div style="color:var(--muted);font-size:13px;">FlowGuard AI / SOP Knowledge</div>
+                <div class="tag purple">知识库</div>
+              </div>
+              <div class="desk-layout">
+                <aside class="desk-side">
+                  <div class="desk-logo">FlowGuard AI</div>
+                  <div class="desk-nav">
+                    <div class="desk-nav-item">异常总览</div>
+                    <div class="desk-nav-item">工单列表</div>
+                    <div class="desk-nav-item">工单详情</div>
+                    <div class="desk-nav-item active">SOP 知识库</div>
+                    <div class="desk-nav-item">异常复盘</div>
+                  </div>
+                </aside>
+                <div class="desk-main">
+                  <div class="toolbar">
+                    <div>
+                      <h3>SOP 知识库</h3>
+                      <p>按异常类型、关键词与问答意图检索处理指引。</p>
+                    </div>
+                    <div class="toolbar-actions">
+                      <button class="ghost-btn">新增文档</button>
+                      <button class="solid-btn">问 AI 助手</button>
+                    </div>
+                  </div>
+                  <div class="search-line">🔎 供应商拒签到场怎么办？</div>
+                  <div class="two-col">
+                    <div class="desk-card">
+                      <h4>文档目录</h4>
+                      <div class="mini-list">
+                        <div class="mini-row"><span>料废处理流程</span><span class="tag blue">当前命中</span></div>
+                        <div class="mini-row"><span>工废报废与破拆</span><span class="tag purple">相关</span></div>
+                        <div class="mini-row"><span>线边错料 / 短缺上报</span><span class="tag amber">相关</span></div>
+                        <div class="mini-row"><span>不良品库移交流程</span><span class="tag green">相关</span></div>
+                      </div>
+                    </div>
+                    <div class="grid-col">
+                      <div class="desk-card">
+                        <h4>AI 回答</h4>
+                        <div class="qa-list">
+                          <div class="qa-item"><small>问题</small>供应商拒签到场怎么办？</div>
+                          <div class="qa-item"><small>回答</small>若供应商授权人员拒不到场签字且超期，可由生管发起强制报废流程；流程完成后由责任部门、物流与财务共同到场破拆，并转运固废区。</div>
+                          <div class="qa-item"><small>适用条件</small>当前场景需先确认该物料已完成 SQE 判定，并处于料废处理链路。</div>
+                        </div>
+                      </div>
+                      <div class="desk-card">
+                        <h4>关联工单</h4>
+                        <div class="mini-list">
+                          <div class="mini-row"><span>FG-20260320-0012</span><span>疑似料废 / 待 SQE 确认</span></div>
+                          <div class="mini-row"><span>FG-20260318-0041</span><span>供应商拒签到场 / 已转报废</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>`
+      },
+      {
+        id: 'web-retro',
+        title: 'Web｜异常复盘页',
+        subtitle: '帮助管理层从异常处理进一步走向持续改进。',
+        audience: '主管 / 经理',
+        info: [
+          '复盘页用于汇总趋势、Top 问题、原因分布、AI 总结与行动项，支撑周度经营复盘。',
+          '页面重点不是展示单次处理结果，而是帮助团队识别重复问题与流程薄弱点。',
+          '通过行动项沉淀，管理层可以将异常治理从事后处理推进到持续优化。'
+        ],
+        html: `
+          <section class="screen active">
+            <div class="screen-meta">
+              <div>
+                <h2>Web｜异常复盘页</h2>
+                <p>将异常处理沉淀为可追踪、可分析、可持续优化的管理闭环。</p>
+              </div>
+              <div class="pill-group"><span class="pill">Review</span><span class="pill">Ops Improvement</span></div>
+            </div>
+            <div class="desk-shell">
+              <div class="desk-topbar">
+                <div class="traffic"><span style="background:#ff6b6b"></span><span style="background:#f5b544"></span><span style="background:#19c37d"></span></div>
+                <div style="color:var(--muted);font-size:13px;">FlowGuard AI / Weekly Review</div>
+                <div class="tag green">周报模式</div>
+              </div>
+              <div class="desk-layout">
+                <aside class="desk-side">
+                  <div class="desk-logo">FlowGuard AI</div>
+                  <div class="desk-nav">
+                    <div class="desk-nav-item">异常总览</div>
+                    <div class="desk-nav-item">工单列表</div>
+                    <div class="desk-nav-item">工单详情</div>
+                    <div class="desk-nav-item">SOP 知识库</div>
+                    <div class="desk-nav-item active">异常复盘</div>
+                  </div>
+                </aside>
+                <div class="desk-main">
+                  <div class="toolbar">
+                    <div>
+                      <h3>周度异常复盘</h3>
+                      <p>2026.03.14 - 2026.03.20 · 从数量、时效、责任与原因四个维度复盘。</p>
+                    </div>
+                    <div class="toolbar-actions">
+                      <button class="ghost-btn">分享给团队</button>
+                      <button class="solid-btn">生成 AI 周报</button>
+                    </div>
+                  </div>
+                  <div class="kpi-grid">
+                    <div class="kpi-card"><span class="small">本周异常总量</span><strong>146</strong><span class="delta" style="background:rgba(245,181,68,.12);color:#ffe4b2;">↑ 12% 环比</span></div>
+                    <div class="kpi-card"><span class="small">闭环率</span><strong>91%</strong><span class="delta">↑ 6% 环比</span></div>
+                    <div class="kpi-card"><span class="small">平均处理时长</span><strong>5.8h</strong><span class="delta">↓ 18% 环比</span></div>
+                    <div class="kpi-card"><span class="small">复发问题</span><strong>11</strong><span class="delta" style="background:rgba(255,107,107,.12);color:#ffd5d5;">标签异常偏多</span></div>
+                  </div>
+                  <div class="content-grid">
+                    <div class="grid-col">
+                      <div class="desk-card">
+                        <h4>趋势与 Top 问题</h4>
+                        <div class="line-chart">
+                          <svg viewBox="0 0 760 220" width="100%" height="100%" aria-hidden="true">
+                            <path d="M20 160 C100 155, 140 108, 200 120 S320 168, 390 108 S490 64, 560 104 S680 180, 740 112" fill="none" stroke="#70d8d8" stroke-width="4" stroke-linecap="round"/>
+                            <g fill="#8cf0f0"><circle cx="200" cy="120" r="5"/><circle cx="560" cy="104" r="5"/><circle cx="740" cy="112" r="5"/></g>
+                          </svg>
+                        </div>
+                        <div class="mini-list" style="margin-top:12px;">
+                          <div class="mini-row"><span>TOP1 标签异常</span><span class="tag amber">32 单</span></div>
+                          <div class="mini-row"><span>TOP2 短缺</span><span class="tag blue">24 单</span></div>
+                          <div class="mini-row"><span>TOP3 疑似料废</span><span class="tag purple">18 单</span></div>
+                        </div>
+                      </div>
+                      <div class="desk-card">
+                        <h4>原因词云</h4>
+                        <div class="word-cloud">
+                          <span class="word big">标签异常</span>
+                          <span class="word mid">补件滞后</span>
+                          <span class="word big">照片不完整</span>
+                          <span class="word mid">SQE 排队</span>
+                          <span class="word small">交接留痕</span>
+                          <span class="word small">退库争议</span>
+                          <span class="word mid">供应商签字</span>
+                          <span class="word small">线边缺料</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="grid-col">
+                      <div class="desk-card">
+                        <h4>AI 周报摘要</h4>
+                        <div class="qa-list">
+                          <div class="qa-item"><small>总体判断</small>本周异常量环比上升，主要增量来自标签异常与短缺类问题，但平均闭环时长继续下降，说明系统流转效率已有改善。</div>
+                          <div class="qa-item"><small>最大卡点</small>待 SQE 确认前置材料不完整，导致来回补充证据。</div>
+                          <div class="qa-item"><small>优化动作</small>增加“标签近景必传”规则，并在上报页前置送货单拍照入口。</div>
+                        </div>
+                      </div>
+                      <div class="desk-card">
+                        <h4>行动项</h4>
+                        <div class="task-list">
+                          <div class="task-item"><small>Action 01</small>优化上报页字段顺序，减少一线漏传照片。</div>
+                          <div class="task-item"><small>Action 02</small>将“标签异常”与“错料”增加自动关联提示。</div>
+                          <div class="task-item"><small>Action 03</small>与 SQE 对齐高峰时段复核 SLA。</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>`
+      }
+    ];
+
+    const nav = document.getElementById('nav');
+    const stage = document.getElementById('screenStage');
+    const flowList = document.getElementById('flowList');
+    const nextBtn = document.getElementById('nextBtn');
+    const toggleInfoBtn = document.getElementById('toggleInfoBtn');
+    const infoPanel = document.getElementById('infoPanel');
+    let current = 0;
+
+    function renderNav() {
+      nav.innerHTML = screens.map((screen, idx) => `
+        <button class="nav-btn ${idx === current ? 'active' : ''}" data-idx="${idx}">
+          <span class="nav-num">${String(idx + 1).padStart(2, '0')}</span>
+          <span class="nav-copy"><b>${screen.title}</b><span>${screen.audience}</span></span>
+        </button>
+      `).join('');
+
+      nav.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          current = Number(btn.dataset.idx);
+          update();
+        });
+      });
+    }
+
+    function renderInfo() {
+      const s = screens[current];
+      flowList.innerHTML = s.info.map((item, idx) => `
+        <div class="flow-item">
+          <div class="flow-num">${idx + 1}</div>
+          <div>${item}</div>
+        </div>
+      `).join('');
+    }
+
+    function update() {
+      renderNav();
+      stage.innerHTML = screens[current].html;
+      renderInfo();
+    }
+
+    nextBtn.addEventListener('click', () => {
+      current = (current + 1) % screens.length;
+      update();
+    });
+
+    toggleInfoBtn.addEventListener('click', () => {
+      const hidden = infoPanel.style.display === 'none';
+      infoPanel.style.display = hidden ? '' : 'none';
+      document.querySelector('.showcase').style.gridTemplateColumns = hidden ? '' : '1fr';
+    });
+
+    update();
+  </script>
+</body>
+</html>
