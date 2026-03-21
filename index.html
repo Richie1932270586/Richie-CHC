@@ -424,10 +424,12 @@
 
     function openProjectModal() {
       projectModal.hidden = false;
+      document.body.classList.add('modal-open');
     }
 
     function closeProjectModal() {
       projectModal.hidden = true;
+      document.body.classList.remove('modal-open');
       projectForm.reset();
       selectedProjectFolder = '';
       projectFolderSummary.innerHTML = '请选择包含 <code>index.html</code> 的项目目录。';
@@ -452,6 +454,12 @@
 
     projectModal.addEventListener('click', (event) => {
       if (event.target.dataset.close === 'project-modal') {
+        closeProjectModal();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !projectModal.hidden) {
         closeProjectModal();
       }
     });
