@@ -47,6 +47,19 @@
       "meta": "空间分析 / 选址辅助系统",
       "featured": false,
       "custom": false
+    },
+    {
+      "id": "test-project-lab",
+      "name": "test",
+      "summary": "test",
+      "focus": "test",
+      "tags": [
+        "test"
+      ],
+      "link": "projects/test-project-lab/",
+      "meta": "自定义项目 / test-project-lab",
+      "featured": false,
+      "custom": true
     }
   ],
   "experiences": [
