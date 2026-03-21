@@ -234,6 +234,9 @@ img { display: block; max-width: 100%; }
   color: var(--muted);
   line-height: 1.9;
 }
+.section-actions {
+  margin-top: 22px;
+}
 
 .card-grid {
   display: grid;
@@ -259,6 +262,11 @@ img { display: block; max-width: 100%; }
   background:
     linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05)),
     radial-gradient(circle at top right, rgba(97,208,255,0.12), transparent 30%);
+}
+.custom-project-card {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04)),
+    radial-gradient(circle at bottom left, rgba(123,109,255,0.10), transparent 34%);
 }
 .card-topline {
   display: flex;
@@ -335,6 +343,122 @@ img { display: block; max-width: 100%; }
 }
 .contact-card h2 { margin: 14px 0 10px; font-size: 40px; }
 
+.modal-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 12, 23, 0.72);
+  backdrop-filter: blur(12px);
+}
+.modal-card {
+  position: relative;
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 28px;
+  border-radius: 28px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(8,17,31,0.95);
+  box-shadow: var(--shadow);
+}
+.modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.modal-head h3 {
+  margin: 16px 0 10px;
+  font-size: 30px;
+}
+.modal-head p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  font-size: 26px;
+  cursor: pointer;
+}
+.icon-btn:hover {
+  background: rgba(255,255,255,0.08);
+}
+.project-form {
+  margin-top: 24px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.form-field {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.form-field span {
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 600;
+}
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  padding: 14px 16px;
+}
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: rgba(211,222,246,0.55);
+}
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: rgba(97,208,255,0.42);
+  box-shadow: 0 0 0 4px rgba(97,208,255,0.08);
+}
+.folder-summary,
+.form-error {
+  margin-top: 4px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.folder-summary {
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  color: var(--muted);
+}
+.form-error {
+  margin-top: 12px;
+  border: 1px solid rgba(255,107,107,0.22);
+  background: rgba(255,107,107,0.08);
+  color: #ffc1c1;
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 22px;
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -363,4 +487,7 @@ img { display: block; max-width: 100%; }
   .container { width: min(calc(100% - 28px), var(--container)); }
   .profile-body, .card, .contact-card { padding: 22px; }
   .contact-card h2 { font-size: 30px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .modal-card { padding: 22px; }
+  .modal-head h3 { font-size: 24px; }
 }
