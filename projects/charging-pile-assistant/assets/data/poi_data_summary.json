@@ -1,0 +1,49 @@
+{
+  "file_count": 21,
+  "total_poi_rows": 5708557,
+  "city_count": 21,
+  "columns": [
+    "名称",
+    "大类",
+    "中类",
+    "经度",
+    "纬度",
+    "省份",
+    "地级市"
+  ],
+  "available_fields": {
+    "name": true,
+    "big_category": true,
+    "mid_category": true,
+    "small_category": false,
+    "lat_lon": true,
+    "province": true,
+    "city": true,
+    "district": false,
+    "address": false,
+    "category_code": false
+  },
+  "cities": [
+    "东莞",
+    "中山",
+    "云浮",
+    "佛山",
+    "广州",
+    "惠州",
+    "揭阳",
+    "梅州",
+    "汕头",
+    "汕尾",
+    "江门",
+    "河源",
+    "深圳",
+    "清远",
+    "湛江",
+    "潮州",
+    "珠海",
+    "肇庆",
+    "茂名",
+    "阳江",
+    "韶关"
+  ]
+}

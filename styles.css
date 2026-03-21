@@ -239,7 +239,7 @@ img { display: block; max-width: 100%; }
   display: grid;
   gap: 20px;
 }
-.demo-grid { grid-template-columns: 1.12fr 0.88fr; }
+.demo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .skills-grid { grid-template-columns: repeat(4, 1fr); }
 
 .card {

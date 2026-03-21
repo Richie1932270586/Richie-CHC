@@ -1,0 +1,10 @@
+{
+  "reference_cities": [
+    "深圳",
+    "河源",
+    "茂名"
+  ],
+  "city_count": 21,
+  "proximity_reference_threshold": 5.84,
+  "region_feature_count": 28
+}

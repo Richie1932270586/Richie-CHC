@@ -1,0 +1,52 @@
+{
+  "main_file": "charging_stations\\2025年全国充电站数据.xlsx",
+  "absolute_main_file": "C:\\Users\\陈慧驰\\Desktop\\HKU\\7222\\Guangdong Province Charging Pile Site Selection Assistant\\data_raw\\charging_stations\\2025年全国充电站数据.xlsx",
+  "row_count": 137235,
+  "guangdong_row_count": 18224,
+  "city_count": 21,
+  "columns": [
+    "名称",
+    "城市",
+    "省份",
+    "经度_WGS84",
+    "纬度_WGS84",
+    "经度_GCJ02",
+    "纬度_GCJ02"
+  ],
+  "available_fields": {
+    "province": true,
+    "city": true,
+    "district": false,
+    "lat_lon": true,
+    "operator": false,
+    "pile_count": false,
+    "power": false,
+    "fast_charge": false,
+    "address": false
+  },
+  "duplicate_city_coord_rows": 3259,
+  "invalid_coord_rows": 0,
+  "guangdong_cities": [
+    "东莞",
+    "中山",
+    "云浮",
+    "佛山",
+    "广州",
+    "惠州",
+    "揭阳",
+    "梅州",
+    "汕头",
+    "汕尾",
+    "江门",
+    "河源",
+    "深圳",
+    "清远",
+    "湛江",
+    "潮州",
+    "珠海",
+    "肇庆",
+    "茂名",
+    "阳江",
+    "韶关"
+  ]
+}

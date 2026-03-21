@@ -1,0 +1,128 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guangdong Province Charging Pile Site Selection Assistant</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Guangdong Province Charging Pile Site Selection Assistant</p>
+        <h1>城市级与区域级充电站选址辅助分析</h1>
+        <p class="subtitle">基于本地已有充电站数据与广东省 POI 数据，输出城市级原型匹配、POI 影响因子和区域级优先关注结果。</p>
+      </div>
+      <div class="hero-note">
+        <div class="note-title">解释边界</div>
+        <p>页面中的结果属于启发式辅助分析，不构成正式规划、投资或落点结论。</p>
+      </div>
+    </header>
+
+    <section class="toolbar card">
+      <div class="field">
+        <label for="citySelect">选择广东省城市</label>
+        <select id="citySelect"></select>
+      </div>
+      <div class="field muted" id="datasetMeta"></div>
+    </section>
+
+    <section class="grid three-up metrics-row">
+      <article class="metric card">
+        <div class="metric-head">
+          <span class="metric-label">城市归类</span>
+          <span class="info-dot" tabindex="0">?
+            <span class="info-pop">表示当前城市在现有城市级特征空间中，与深圳、河源、茂名三座参考城市的相对接近关系。若三者距离接近，文案会主动降级为“仅供参考”。</span>
+          </span>
+        </div>
+        <strong id="metricPrototype"></strong>
+        <span id="metricMatch"></span>
+      </article>
+      <article class="metric card">
+        <div class="metric-head">
+          <span class="metric-label">总体启发式可信度</span>
+          <span class="info-dot" tabindex="0">?
+            <span class="info-pop">这是启发式可信度，不是统计置信区间。它综合城市级与区域级两个层面的稳健性，用于提醒结果是否适合较强口吻解释。下方“城市级”表示城市原型匹配的稳健程度。</span>
+          </span>
+        </div>
+        <strong id="metricOverallConfidence"></strong>
+        <span id="metricConfidenceNote"></span>
+      </article>
+      <article class="metric card">
+        <div class="metric-head">
+          <span class="metric-label">区域级可信度</span>
+          <span class="info-dot" tabindex="0">?
+            <span class="info-pop">反映区域网格评分的稳健程度，主要受 POI 覆盖度、区域样本量、参考城市模型可分辨度和城市级匹配清晰度影响。下方 AUC 表示参考城市内部“有站/无站网格”的平均区分能力。</span>
+          </span>
+        </div>
+        <strong id="metricRegionConfidence"></strong>
+        <span id="metricWeightedAuc"></span>
+      </article>
+    </section>
+
+    <section class="grid two-up">
+      <article class="card">
+        <h2>城市级分析</h2>
+        <div id="citySummary" class="summary-list"></div>
+        <div>
+          <h3>与三座参考城市的距离</h3>
+          <div id="distanceBars" class="bar-list"></div>
+        </div>
+      </article>
+      <article class="card">
+        <h2>POI 影响因子</h2>
+        <p class="caption">以下展示 14 个 POI 大类在当前迁移评分中的相对影响强度。它们来自参考城市网格模型中的大类特征，不代表因果关系。</p>
+        <div id="poiFactors" class="bar-list"></div>
+      </article>
+    </section>
+
+    <section class="grid two-up">
+      <article class="card">
+        <div class="card-title-row">
+          <div>
+            <h2>区域级优先关注热力栅格</h2>
+            <p class="caption">图中每个格子对应一个 2 公里规则网格。颜色越深表示相对关注度越高；白色描边格表示网格边界。图中标出的数字与右侧表格排名一一对应。</p>
+          </div>
+          <button id="expandHeatmapBtn" class="ghost-button" type="button">放大查看</button>
+        </div>
+        <div id="regionScatter" class="scatter-wrap"></div>
+      </article>
+      <article class="card">
+        <h2>优先关注网格</h2>
+        <p class="caption">这里只给出更值得继续核查的网格类型，不直接对应具体街道或正式落点。</p>
+        <div id="regionTable"></div>
+      </article>
+    </section>
+
+    <section class="grid two-up">
+      <article class="card">
+        <h2>参考城市画像</h2>
+        <div id="referenceProfiles" class="reference-list"></div>
+      </article>
+      <article class="card">
+        <h2>数据边界与局限性</h2>
+        <ul id="limitations" class="bullet-list"></ul>
+      </article>
+    </section>
+  </div>
+
+  <div id="heatmapModal" class="modal-shell" hidden>
+    <div class="modal-backdrop" data-close="heatmap"></div>
+    <div class="modal-panel">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title">放大热力栅格</div>
+          <div class="modal-subtitle">用于查看更密集城市中的网格编号与局部差异。</div>
+        </div>
+        <button id="closeHeatmapModal" class="ghost-button" type="button">关闭</button>
+      </div>
+      <div id="heatmapModalBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="assets/data/app_data.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
+
