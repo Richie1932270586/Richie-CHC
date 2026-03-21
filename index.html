@@ -70,10 +70,6 @@
             <p>围绕运营协同、供应链异常处理与空间选址分析场景，展示从问题拆解、分析建模到产品化表达的项目实践。</p>
           </div>
           <div class="section-top-actions">
-            <div class="rail-controls">
-              <button class="icon-btn rail-btn" type="button" id="scrollProjectsPrev" aria-label="向左滚动">‹</button>
-              <button class="icon-btn rail-btn" type="button" id="scrollProjectsNext" aria-label="向右滚动">›</button>
-            </div>
             <button class="btn btn-secondary" type="button" id="openProjectModal">添加项目</button>
           </div>
         </div>
@@ -255,14 +251,19 @@
           <textarea id="projectSummaryInput" rows="4" placeholder="用一句话说明项目解决的问题与核心价值。" required></textarea>
         </label>
 
+        <label class="form-field">
+          <span>项目重点</span>
+          <textarea id="projectFocusInput" rows="4" placeholder="例如：围绕异常管理与跨角色协同设计产品结构，通过任务分发、进度追踪和管理看板推动处置闭环。"></textarea>
+        </label>
+
         <div class="form-grid">
           <label class="form-field">
             <span>项目标签</span>
-            <input type="text" id="projectTagsInput" placeholder="数据分析，场景设计，决策支持" />
+            <textarea id="projectTagsInput" rows="3" placeholder="每行一个标签，或用逗号分隔"></textarea>
           </label>
 
           <label class="form-field">
-            <span>项目链接</span>
+            <span>查看项目链接</span>
             <input type="text" id="projectLinkInput" placeholder="留空时自动生成 projects/项目目录/" />
           </label>
         </div>
@@ -302,10 +303,9 @@
     const openProjectModalBtn = document.getElementById('openProjectModal');
     const closeProjectModalBtn = document.getElementById('closeProjectModal');
     const cancelProjectModalBtn = document.getElementById('cancelProjectModal');
-    const scrollProjectsPrevBtn = document.getElementById('scrollProjectsPrev');
-    const scrollProjectsNextBtn = document.getElementById('scrollProjectsNext');
     const projectNameInput = document.getElementById('projectNameInput');
     const projectSummaryInput = document.getElementById('projectSummaryInput');
+    const projectFocusInput = document.getElementById('projectFocusInput');
     const projectTagsInput = document.getElementById('projectTagsInput');
     const projectLinkInput = document.getElementById('projectLinkInput');
     const projectFolderInput = document.getElementById('projectFolderInput');
@@ -329,7 +329,7 @@
 
     function normalizeTags(raw) {
       return raw
-        .split(/[，,]/)
+        .split(/[，,\n\r]/)
         .map(tag => tag.trim())
         .filter(Boolean)
         .slice(0, 4);
@@ -370,10 +370,10 @@
       subBlock.className = 'sub-block';
 
       const subTitle = document.createElement('h4');
-      subTitle.textContent = '项目入口';
+      subTitle.textContent = '项目重点';
 
       const subDesc = document.createElement('p');
-      subDesc.textContent = project.link;
+      subDesc.textContent = project.focus || project.summary;
 
       subBlock.append(subTitle, subDesc);
 
@@ -453,12 +453,6 @@
     openProjectModalBtn.addEventListener('click', openProjectModal);
     closeProjectModalBtn.addEventListener('click', closeProjectModal);
     cancelProjectModalBtn.addEventListener('click', closeProjectModal);
-    scrollProjectsPrevBtn.addEventListener('click', () => {
-      projectGrid.scrollBy({ left: -380, behavior: 'smooth' });
-    });
-    scrollProjectsNextBtn.addEventListener('click', () => {
-      projectGrid.scrollBy({ left: 380, behavior: 'smooth' });
-    });
 
     projectModal.addEventListener('click', (event) => {
       if (event.target === projectModal || event.target.dataset.close === 'project-modal') {
@@ -496,6 +490,7 @@
 
       const name = projectNameInput.value.trim();
       const summary = projectSummaryInput.value.trim();
+      const focus = projectFocusInput.value.trim();
       const tags = normalizeTags(projectTagsInput.value.trim());
       const link = projectLinkInput.value.trim() || (selectedProjectFolder ? 'projects/' + selectedProjectFolder + '/' : '');
 
@@ -520,6 +515,7 @@
         id: projectId,
         name,
         summary,
+        focus,
         tags,
         link,
         meta: selectedProjectFolder ? '自定义项目 / ' + selectedProjectFolder : '自定义项目 / 外部链接'
