@@ -76,7 +76,7 @@
 
         <div class="project-rail reveal">
           <div class="card-grid demo-grid" id="projectGrid">
-          <article class="card reveal demo-card featured">
+          <article class="card reveal demo-card featured" data-project-id="ops-copilot" data-project-kind="default">
             <div class="card-topline">
               <span class="pill">项目案例</span>
               <span class="meta">运营工作台 / 场景化设计</span>
@@ -97,10 +97,11 @@
             </div>
             <div class="actions">
               <a class="btn btn-primary" href="projects/ops-copilot/" target="_blank" rel="noopener">查看项目</a>
+              <button class="btn btn-danger" type="button" data-delete-project>删除项目</button>
             </div>
           </article>
 
-          <article class="card reveal demo-card">
+          <article class="card reveal demo-card" data-project-id="flowguard-ai" data-project-kind="default">
             <div class="card-topline">
               <span class="pill">项目案例</span>
               <span class="meta">异常协同 / 供应链场景</span>
@@ -121,10 +122,11 @@
             </div>
             <div class="actions">
               <a class="btn btn-primary" href="projects/flowguard-ai/" target="_blank" rel="noopener">查看项目</a>
+              <button class="btn btn-danger" type="button" data-delete-project>删除项目</button>
             </div>
           </article>
 
-          <article class="card reveal demo-card">
+          <article class="card reveal demo-card" data-project-id="charging-pile-assistant" data-project-kind="default">
             <div class="card-topline">
               <span class="pill">项目案例</span>
               <span class="meta">空间分析 / 选址辅助系统</span>
@@ -145,6 +147,7 @@
             </div>
             <div class="actions">
               <a class="btn btn-primary" href="projects/charging-pile-assistant/" target="_blank" rel="noopener">查看项目</a>
+              <button class="btn btn-danger" type="button" data-delete-project>删除项目</button>
             </div>
           </article>
           </div>
@@ -285,8 +288,27 @@
     </div>
   </div>
 
+  <div class="modal-shell" id="deleteProjectModal" hidden style="display: none;" aria-hidden="true">
+    <div class="modal-backdrop" data-close="delete-project-modal" onclick="window.closeDeleteProjectModal && window.closeDeleteProjectModal()"></div>
+    <div class="modal-card confirm-modal-card">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">DELETE PROJECT</div>
+          <h3>删除这个项目？</h3>
+          <p id="deleteProjectMessage">确认后，这个项目会从当前页面移除。</p>
+        </div>
+        <button class="icon-btn" type="button" id="closeDeleteProjectModal" aria-label="关闭" onclick="window.closeDeleteProjectModal && window.closeDeleteProjectModal()">×</button>
+      </div>
+      <div class="form-actions confirm-actions">
+        <button class="btn btn-secondary" type="button" id="cancelDeleteProject">取消</button>
+        <button class="btn btn-danger" type="button" id="confirmDeleteProject">是，删除</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const STORAGE_KEY = 'portfolio-custom-projects';
+    const REMOVED_PROJECTS_KEY = 'portfolio-removed-projects';
     const DEFAULT_PROJECT_FOLDER_SUMMARY = '可选：选择包含 <code>index.html</code> 的项目目录；如果只想放直达链接，也可以直接填写链接。';
     const items = document.querySelectorAll('.reveal');
     const io = new IntersectionObserver((entries) => {
@@ -313,8 +335,14 @@
     const projectFolderInput = document.getElementById('projectFolderInput');
     const projectFolderSummary = document.getElementById('projectFolderSummary');
     const projectFormError = document.getElementById('projectFormError');
+    const deleteProjectModal = document.getElementById('deleteProjectModal');
+    const closeDeleteProjectModalBtn = document.getElementById('closeDeleteProjectModal');
+    const cancelDeleteProjectBtn = document.getElementById('cancelDeleteProject');
+    const confirmDeleteProjectBtn = document.getElementById('confirmDeleteProject');
+    const deleteProjectMessage = document.getElementById('deleteProjectMessage');
 
     let selectedProjectFolder = '';
+    let pendingDeleteProject = null;
 
     function loadCustomProjects() {
       try {
@@ -327,6 +355,19 @@
 
     function saveCustomProjects(projects) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+    }
+
+    function loadRemovedProjects() {
+      try {
+        const raw = localStorage.getItem(REMOVED_PROJECTS_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveRemovedProjects(projectIds) {
+      localStorage.setItem(REMOVED_PROJECTS_KEY, JSON.stringify(projectIds));
     }
 
     function normalizeTags(raw) {
@@ -348,6 +389,8 @@
       const card = document.createElement('article');
       card.className = 'card reveal demo-card custom-project-card visible';
       card.dataset.customProject = project.id;
+      card.dataset.projectId = project.id;
+      card.dataset.projectKind = 'custom';
 
       const topline = document.createElement('div');
       topline.className = 'card-topline';
@@ -394,10 +437,10 @@
       viewLink.textContent = '查看项目';
 
       const removeBtn = document.createElement('button');
-      removeBtn.className = 'btn btn-secondary';
+      removeBtn.className = 'btn btn-danger';
       removeBtn.type = 'button';
-      removeBtn.textContent = '删除入口';
-      removeBtn.addEventListener('click', () => removeCustomProject(project.id));
+      removeBtn.textContent = '删除项目';
+      removeBtn.setAttribute('data-delete-project', '');
 
       actions.append(viewLink, removeBtn);
 
@@ -418,18 +461,17 @@
       });
     }
 
-    function removeCustomProject(projectId) {
-      const projects = loadCustomProjects().filter(project => project.id !== projectId);
-      saveCustomProjects(projects);
-      renderCustomProjects();
+    function syncModalOpenState() {
+      const hasOpenModal = Array.from(document.querySelectorAll('.modal-shell')).some(modal => modal.style.display !== 'none');
+      document.body.classList.toggle('modal-open', hasOpenModal);
+      document.documentElement.classList.toggle('modal-open', hasOpenModal);
     }
 
     function setProjectModalOpen(isOpen) {
       projectModal.hidden = !isOpen;
       projectModal.style.display = isOpen ? 'grid' : 'none';
       projectModal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-      document.body.classList.toggle('modal-open', isOpen);
-      document.documentElement.classList.toggle('modal-open', isOpen);
+      syncModalOpenState();
     }
 
     function openProjectModal() {
@@ -452,9 +494,79 @@
       projectFormError.textContent = message || '';
     }
 
+    function setDeleteProjectModalOpen(isOpen) {
+      deleteProjectModal.hidden = !isOpen;
+      deleteProjectModal.style.display = isOpen ? 'grid' : 'none';
+      deleteProjectModal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+      syncModalOpenState();
+    }
+
+    function closeDeleteProjectModal() {
+      const trigger = pendingDeleteProject && pendingDeleteProject.trigger;
+      setDeleteProjectModalOpen(false);
+      pendingDeleteProject = null;
+      if (trigger) {
+        trigger.focus();
+      }
+    }
+
+    function animateProjectRemoval(card, onComplete) {
+      card.classList.add('is-removing');
+      window.setTimeout(() => {
+        onComplete();
+      }, 360);
+    }
+
+    function removeProjectCard(card) {
+      const projectId = card.dataset.projectId;
+      const projectKind = card.dataset.projectKind || 'default';
+
+      animateProjectRemoval(card, () => {
+        if (projectKind === 'custom') {
+          const projects = loadCustomProjects().filter(project => project.id !== projectId);
+          saveCustomProjects(projects);
+        } else {
+          const removedProjects = new Set(loadRemovedProjects());
+          removedProjects.add(projectId);
+          saveRemovedProjects(Array.from(removedProjects));
+        }
+
+        card.remove();
+      });
+    }
+
+    function openDeleteProjectModal(card, trigger) {
+      const projectName = (card.querySelector('h3') && card.querySelector('h3').textContent.trim()) || '这个项目';
+      pendingDeleteProject = { card, trigger };
+      deleteProjectMessage.textContent = '确定要删除“' + projectName + '”吗？删除后会直接从当前页面移除。';
+      setDeleteProjectModalOpen(true);
+      confirmDeleteProjectBtn.focus();
+    }
+
+    function restoreRemovedDefaultProjects() {
+      const removedProjects = new Set(loadRemovedProjects());
+      document.querySelectorAll('[data-project-kind="default"]').forEach(card => {
+        if (removedProjects.has(card.dataset.projectId)) {
+          card.remove();
+        }
+      });
+    }
+
     openProjectModalBtn.addEventListener('click', openProjectModal);
     closeProjectModalBtn.addEventListener('click', closeProjectModal);
     cancelProjectModalBtn.addEventListener('click', closeProjectModal);
+    closeDeleteProjectModalBtn.addEventListener('click', closeDeleteProjectModal);
+    cancelDeleteProjectBtn.addEventListener('click', closeDeleteProjectModal);
+    confirmDeleteProjectBtn.addEventListener('click', () => {
+      if (!pendingDeleteProject) {
+        return;
+      }
+
+      const { card } = pendingDeleteProject;
+      setDeleteProjectModalOpen(false);
+      pendingDeleteProject = null;
+      removeProjectCard(card);
+    });
 
     projectModal.addEventListener('click', (event) => {
       if (event.target === projectModal || event.target.dataset.close === 'project-modal') {
@@ -462,10 +574,33 @@
       }
     });
 
+    deleteProjectModal.addEventListener('click', (event) => {
+      if (event.target === deleteProjectModal || event.target.dataset.close === 'delete-project-modal') {
+        closeDeleteProjectModal();
+      }
+    });
+
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && projectModal.style.display !== 'none') {
         closeProjectModal();
       }
+      if (event.key === 'Escape' && deleteProjectModal.style.display !== 'none') {
+        closeDeleteProjectModal();
+      }
+    });
+
+    projectGrid.addEventListener('click', (event) => {
+      const deleteBtn = event.target.closest('[data-delete-project]');
+      if (!deleteBtn) {
+        return;
+      }
+
+      const card = deleteBtn.closest('[data-project-id]');
+      if (!card) {
+        return;
+      }
+
+      openDeleteProjectModal(card, deleteBtn);
     });
 
     projectFolderInput.addEventListener('change', () => {
@@ -535,9 +670,11 @@
       closeProjectModal();
     });
 
+    restoreRemovedDefaultProjects();
     renderCustomProjects();
     window.openProjectModal = openProjectModal;
     window.closeProjectModal = closeProjectModal;
+    window.closeDeleteProjectModal = closeDeleteProjectModal;
   </script>
 </body>
 </html>

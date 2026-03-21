@@ -184,6 +184,15 @@ img { display: block; max-width: 100%; }
   color: var(--text);
 }
 .btn-secondary:hover { background: rgba(255,255,255,0.08); }
+.btn-danger {
+  border-color: rgba(255,107,107,0.22);
+  background: rgba(255,107,107,0.10);
+  color: #ffd2d2;
+}
+.btn-danger:hover {
+  background: rgba(255,107,107,0.18);
+  border-color: rgba(255,107,107,0.34);
+}
 
 .profile-card,
 .card,
@@ -428,6 +437,12 @@ img { display: block; max-width: 100%; }
   color: var(--muted);
   line-height: 1.8;
 }
+.confirm-modal-card {
+  width: min(520px, calc(100vw - 32px));
+}
+.confirm-actions {
+  margin-top: 26px;
+}
 .icon-btn {
   width: 42px;
   height: 42px;
@@ -519,6 +534,13 @@ img { display: block; max-width: 100%; }
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+.demo-card.is-removing {
+  pointer-events: none;
+  opacity: 0 !important;
+  transform: scale(0.94) translateY(18px) !important;
+  filter: blur(8px);
+  transition: opacity 0.36s ease, transform 0.36s ease, filter 0.36s ease;
 }
 
 @media (max-width: 1024px) {
