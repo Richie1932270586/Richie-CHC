@@ -63,16 +63,23 @@
 
     <section class="section" id="demo">
       <div class="container">
-        <div class="section-head reveal">
-          <div class="section-kicker">PROJECT CASES</div>
-          <h2>项目案例</h2>
-          <p>围绕运营协同、供应链异常处理与空间选址分析场景，展示从问题拆解、分析建模到产品化表达的项目实践。</p>
-          <div class="section-actions">
+        <div class="section-topbar reveal">
+          <div class="section-head section-head-inline">
+            <div class="section-kicker">PROJECT CASES</div>
+            <h2>项目案例</h2>
+            <p>围绕运营协同、供应链异常处理与空间选址分析场景，展示从问题拆解、分析建模到产品化表达的项目实践。</p>
+          </div>
+          <div class="section-top-actions">
+            <div class="rail-controls">
+              <button class="icon-btn rail-btn" type="button" id="scrollProjectsPrev" aria-label="向左滚动">‹</button>
+              <button class="icon-btn rail-btn" type="button" id="scrollProjectsNext" aria-label="向右滚动">›</button>
+            </div>
             <button class="btn btn-secondary" type="button" id="openProjectModal">添加项目</button>
           </div>
         </div>
 
-        <div class="card-grid demo-grid" id="projectGrid">
+        <div class="project-rail reveal">
+          <div class="card-grid demo-grid" id="projectGrid">
           <article class="card reveal demo-card featured">
             <div class="card-topline">
               <span class="pill">项目案例</span>
@@ -144,6 +151,7 @@
               <a class="btn btn-primary" href="projects/charging-pile-assistant/" target="_blank" rel="noopener">查看项目</a>
             </div>
           </article>
+          </div>
         </div>
       </div>
     </section>
@@ -294,6 +302,8 @@
     const openProjectModalBtn = document.getElementById('openProjectModal');
     const closeProjectModalBtn = document.getElementById('closeProjectModal');
     const cancelProjectModalBtn = document.getElementById('cancelProjectModal');
+    const scrollProjectsPrevBtn = document.getElementById('scrollProjectsPrev');
+    const scrollProjectsNextBtn = document.getElementById('scrollProjectsNext');
     const projectNameInput = document.getElementById('projectNameInput');
     const projectSummaryInput = document.getElementById('projectSummaryInput');
     const projectTagsInput = document.getElementById('projectTagsInput');
@@ -433,6 +443,12 @@
     openProjectModalBtn.addEventListener('click', openProjectModal);
     closeProjectModalBtn.addEventListener('click', closeProjectModal);
     cancelProjectModalBtn.addEventListener('click', closeProjectModal);
+    scrollProjectsPrevBtn.addEventListener('click', () => {
+      projectGrid.scrollBy({ left: -380, behavior: 'smooth' });
+    });
+    scrollProjectsNextBtn.addEventListener('click', () => {
+      projectGrid.scrollBy({ left: 380, behavior: 'smooth' });
+    });
 
     projectModal.addEventListener('click', (event) => {
       if (event.target.dataset.close === 'project-modal') {
