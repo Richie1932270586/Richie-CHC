@@ -261,6 +261,9 @@ img { display: block; max-width: 100%; }
 }
 .project-rail {
   position: relative;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-snap-type: x proximity;
 }
 
 .card-grid {
@@ -269,7 +272,10 @@ img { display: block; max-width: 100%; }
   align-items: stretch;
 }
 .demo-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(320px, 380px);
+  width: max-content;
+  min-width: 100%;
   padding: 4px 0 0;
 }
 .skills-grid { grid-template-columns: repeat(4, 1fr); }
@@ -282,6 +288,7 @@ img { display: block; max-width: 100%; }
   min-width: 0;
   display: flex;
   flex-direction: column;
+  scroll-snap-align: start;
 }
 
 .demo-card h3,
@@ -520,9 +527,7 @@ img { display: block; max-width: 100%; }
   .contact-card {
     grid-template-columns: 1fr;
   }
-  .demo-grid {
-    grid-template-columns: 1fr;
-  }
+  .demo-grid { grid-auto-columns: minmax(300px, 84vw); }
   .contact-card { align-items: flex-start; }
   .section-topbar {
     align-items: flex-start;
