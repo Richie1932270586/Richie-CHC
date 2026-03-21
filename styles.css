@@ -70,6 +70,11 @@ img { display: block; max-width: 100%; }
   justify-content: space-between;
   min-height: 72px;
 }
+.nav-side {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 
 .brand {
   display: inline-flex;
@@ -97,6 +102,26 @@ img { display: block; max-width: 100%; }
 }
 
 .nav-links a:hover { color: var(--text); }
+.admin-toggle {
+  min-height: 40px;
+  padding: 0 16px;
+  white-space: nowrap;
+}
+.admin-toggle.is-unlocked {
+  border-color: rgba(97,208,255,0.28);
+  background: rgba(97,208,255,0.10);
+  color: #d8f4ff;
+}
+.admin-only,
+.admin-only-flex {
+  display: none !important;
+}
+body[data-admin-auth="true"] .admin-only {
+  display: inline-flex !important;
+}
+body[data-admin-auth="true"] .admin-only-flex {
+  display: flex !important;
+}
 
 .section { padding: 72px 0; }
 .hero { padding-top: 64px; }
@@ -318,6 +343,11 @@ img { display: block; max-width: 100%; }
     linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04)),
     radial-gradient(circle at bottom left, rgba(123,109,255,0.10), transparent 34%);
 }
+.custom-experience-card {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04)),
+    radial-gradient(circle at top right, rgba(97,208,255,0.10), transparent 32%);
+}
 .card-topline {
   display: flex;
   align-items: center;
@@ -386,6 +416,12 @@ img { display: block; max-width: 100%; }
   font-size: 13px;
   letter-spacing: 0.06em;
 }
+.timeline-actions {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
 
 .contact-card {
   border-radius: 32px;
@@ -438,6 +474,9 @@ img { display: block; max-width: 100%; }
   line-height: 1.8;
 }
 .confirm-modal-card {
+  width: min(520px, calc(100vw - 32px));
+}
+.auth-modal-card {
   width: min(520px, calc(100vw - 32px));
 }
 .confirm-actions {
@@ -535,7 +574,7 @@ img { display: block; max-width: 100%; }
   opacity: 1;
   transform: translateY(0);
 }
-.demo-card.is-removing {
+.card.is-removing {
   pointer-events: none;
   opacity: 0 !important;
   transform: scale(0.94) translateY(18px) !important;
@@ -563,6 +602,7 @@ img { display: block; max-width: 100%; }
 @media (max-width: 760px) {
   .nav { min-height: 64px; }
   .nav-links { display: none; }
+  .nav-side { margin-left: auto; }
   .section { padding: 56px 0; }
   .hero { padding-top: 42px; }
   .container { width: min(calc(100% - 28px), var(--container)); }

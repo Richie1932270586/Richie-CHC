@@ -18,12 +18,15 @@
         <span class="brand-mark">R</span>
         <span>Richie CHC</span>
       </a>
-      <nav class="nav-links">
-        <a href="#demo">项目案例</a>
-        <a href="#experience">经历</a>
-        <a href="#skills">能力</a>
-        <a href="#contact">联系我</a>
-      </nav>
+      <div class="nav-side">
+        <nav class="nav-links">
+          <a href="#demo">项目案例</a>
+          <a href="#experience">经历</a>
+          <a href="#skills">能力</a>
+          <a href="#contact">联系我</a>
+        </nav>
+        <button class="btn btn-secondary admin-toggle" type="button" id="adminToggleButton" aria-pressed="false">解锁编辑</button>
+      </div>
     </div>
   </header>
 
@@ -70,13 +73,13 @@
             <p>围绕运营协同、供应链异常处理与空间选址分析场景，展示从问题拆解、分析建模到产品化表达的项目实践。</p>
           </div>
           <div class="section-top-actions">
-            <button class="btn btn-secondary" type="button" id="openProjectModal">添加项目</button>
+            <button class="btn btn-secondary admin-only" type="button" id="openProjectModal">添加项目</button>
           </div>
         </div>
 
         <div class="project-rail reveal">
           <div class="card-grid demo-grid" id="projectGrid">
-          <article class="card reveal demo-card featured" data-project-id="ops-copilot" data-project-kind="default">
+          <article class="card reveal demo-card featured" data-entry-id="ops-copilot" data-entry-type="project" data-entry-kind="default">
             <div class="card-topline">
               <span class="pill">项目案例</span>
               <span class="meta">运营工作台 / 场景化设计</span>
@@ -97,11 +100,11 @@
             </div>
             <div class="actions">
               <a class="btn btn-primary" href="projects/ops-copilot/" target="_blank" rel="noopener">查看项目</a>
-              <button class="btn btn-danger" type="button" data-delete-project>删除项目</button>
+              <button class="btn btn-danger admin-only" type="button" data-delete-entry>删除项目</button>
             </div>
           </article>
 
-          <article class="card reveal demo-card" data-project-id="flowguard-ai" data-project-kind="default">
+          <article class="card reveal demo-card" data-entry-id="flowguard-ai" data-entry-type="project" data-entry-kind="default">
             <div class="card-topline">
               <span class="pill">项目案例</span>
               <span class="meta">异常协同 / 供应链场景</span>
@@ -122,11 +125,11 @@
             </div>
             <div class="actions">
               <a class="btn btn-primary" href="projects/flowguard-ai/" target="_blank" rel="noopener">查看项目</a>
-              <button class="btn btn-danger" type="button" data-delete-project>删除项目</button>
+              <button class="btn btn-danger admin-only" type="button" data-delete-entry>删除项目</button>
             </div>
           </article>
 
-          <article class="card reveal demo-card" data-project-id="charging-pile-assistant" data-project-kind="default">
+          <article class="card reveal demo-card" data-entry-id="charging-pile-assistant" data-entry-type="project" data-entry-kind="default">
             <div class="card-topline">
               <span class="pill">项目案例</span>
               <span class="meta">空间分析 / 选址辅助系统</span>
@@ -147,7 +150,7 @@
             </div>
             <div class="actions">
               <a class="btn btn-primary" href="projects/charging-pile-assistant/" target="_blank" rel="noopener">查看项目</a>
-              <button class="btn btn-danger" type="button" data-delete-project>删除项目</button>
+              <button class="btn btn-danger admin-only" type="button" data-delete-entry>删除项目</button>
             </div>
           </article>
           </div>
@@ -157,29 +160,43 @@
 
     <section class="section" id="experience">
       <div class="container">
-        <div class="section-head reveal">
-          <div class="section-kicker">EXPERIENCE</div>
-          <h2>实习与实践经历</h2>
-          <p>聚焦运营、供应链与物流场景中的分析支持、流程梳理与业务协同实践。</p>
+        <div class="section-topbar reveal">
+          <div class="section-head section-head-inline">
+            <div class="section-kicker">EXPERIENCE</div>
+            <h2>实习与实践经历</h2>
+            <p>聚焦运营、供应链与物流场景中的分析支持、流程梳理与业务协同实践。</p>
+          </div>
+          <div class="section-top-actions">
+            <button class="btn btn-secondary admin-only" type="button" id="openExperienceModal">添加经历</button>
+          </div>
         </div>
 
-        <div class="timeline">
-          <article class="card reveal timeline-card">
+        <div class="timeline" id="experienceTimeline">
+          <article class="card reveal timeline-card" data-entry-id="sunshine-travel-ops-intern" data-entry-type="experience" data-entry-kind="default">
             <div class="timeline-time">2024.11 – 2025.02</div>
             <h3>阳光出行有限公司 · 运营实习生</h3>
             <p>参与 50+ 城市司机激励方案设计、复核与上线，围绕新增、活跃、留存与成本搭建监控体系，支持运营策略评估与活动效果分析。</p>
+            <div class="timeline-actions admin-only-flex">
+              <button class="btn btn-danger" type="button" data-delete-entry>删除经历</button>
+            </div>
           </article>
 
-          <article class="card reveal timeline-card">
+          <article class="card reveal timeline-card" data-entry-id="xiaomi-logistics-planning-intern" data-entry-type="experience" data-entry-kind="default">
             <div class="timeline-time">2024.07 – 2024.11</div>
             <h3>中都星徽物流（小米汽车厂内物流部）· 物流规划实习生</h3>
             <p>轮岗参与厂内物流现场，梳理物料配送、仓储与异常处理流程，基于 5000+ 条物料记录分析配送时效、库存策略与异常点，输出标准化 SOP。</p>
+            <div class="timeline-actions admin-only-flex">
+              <button class="btn btn-danger" type="button" data-delete-entry>删除经历</button>
+            </div>
           </article>
 
-          <article class="card reveal timeline-card">
+          <article class="card reveal timeline-card" data-entry-id="miku-tech-startup-support" data-entry-type="experience" data-entry-kind="default">
             <div class="timeline-time">创业实践</div>
             <h3>咪酷科技有限公司 · 创业 / 运维支持</h3>
             <p>参与公司筹备与初期运营，负责海外服务器运维支持与 Linux 系统管理，保障基础环境稳定运行并协助业务落地。</p>
+            <div class="timeline-actions admin-only-flex">
+              <button class="btn btn-danger" type="button" data-delete-entry>删除经历</button>
+            </div>
           </article>
         </div>
       </div>
@@ -288,27 +305,95 @@
     </div>
   </div>
 
-  <div class="modal-shell" id="deleteProjectModal" hidden style="display: none;" aria-hidden="true">
-    <div class="modal-backdrop" data-close="delete-project-modal" onclick="window.closeDeleteProjectModal && window.closeDeleteProjectModal()"></div>
+  <div class="modal-shell" id="experienceModal" hidden style="display: none;" aria-hidden="true">
+    <div class="modal-backdrop" data-close="experience-modal" onclick="window.closeExperienceModal && window.closeExperienceModal()"></div>
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">EXPERIENCE MANAGER</div>
+          <h3>添加经历卡片</h3>
+          <p>填写时间、标题和经历简介后，可生成首页经历卡片，并保存在当前浏览器的本地存储中。</p>
+        </div>
+        <button class="icon-btn" type="button" id="closeExperienceModal" aria-label="关闭" onclick="window.closeExperienceModal && window.closeExperienceModal()">×</button>
+      </div>
+
+      <form class="project-form" id="experienceForm">
+        <label class="form-field">
+          <span>时间</span>
+          <input type="text" id="experienceTimeInput" placeholder="例如：2025.03 – 2025.08" required />
+        </label>
+
+        <label class="form-field">
+          <span>经历标题</span>
+          <input type="text" id="experienceTitleInput" placeholder="例如：某某公司 · 产品实习生" required />
+        </label>
+
+        <label class="form-field">
+          <span>经历简介</span>
+          <textarea id="experienceSummaryInput" rows="5" placeholder="用一段话概括你的职责、成果或参与内容。" required></textarea>
+        </label>
+
+        <div class="form-note">当前功能只会生成首页经历卡片，并保存在当前浏览器的本地存储中；不会自动修改仓库里的原始经历内容。</div>
+        <div class="form-error" id="experienceFormError" hidden></div>
+
+        <div class="form-actions">
+          <button class="btn btn-secondary" type="button" id="cancelExperienceModal" onclick="window.closeExperienceModal && window.closeExperienceModal()">取消</button>
+          <button class="btn btn-primary" type="submit">生成经历卡片</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-shell" id="deleteEntryModal" hidden style="display: none;" aria-hidden="true">
+    <div class="modal-backdrop" data-close="delete-entry-modal" onclick="window.closeDeleteEntryModal && window.closeDeleteEntryModal()"></div>
     <div class="modal-card confirm-modal-card">
       <div class="modal-head">
         <div>
-          <div class="section-kicker">DELETE PROJECT</div>
-          <h3>删除这个项目？</h3>
-          <p id="deleteProjectMessage">确认后，这个项目会从当前页面移除。</p>
+          <div class="section-kicker">DELETE ENTRY</div>
+          <h3>删除这项内容？</h3>
+          <p id="deleteEntryMessage">确认后，这项内容会从当前页面移除。</p>
         </div>
-        <button class="icon-btn" type="button" id="closeDeleteProjectModal" aria-label="关闭" onclick="window.closeDeleteProjectModal && window.closeDeleteProjectModal()">×</button>
+        <button class="icon-btn" type="button" id="closeDeleteEntryModal" aria-label="关闭" onclick="window.closeDeleteEntryModal && window.closeDeleteEntryModal()">×</button>
       </div>
       <div class="form-actions confirm-actions">
-        <button class="btn btn-secondary" type="button" id="cancelDeleteProject">取消</button>
-        <button class="btn btn-danger" type="button" id="confirmDeleteProject">是，删除</button>
+        <button class="btn btn-secondary" type="button" id="cancelDeleteEntry">取消</button>
+        <button class="btn btn-danger" type="button" id="confirmDeleteEntry">是，删除</button>
       </div>
     </div>
   </div>
 
+  <div class="modal-shell" id="adminAuthModal" hidden style="display: none;" aria-hidden="true">
+    <div class="modal-backdrop" data-close="admin-auth-modal" onclick="window.closeAdminAuthModal && window.closeAdminAuthModal()"></div>
+    <div class="modal-card auth-modal-card">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">EDITOR LOCK</div>
+          <h3>解锁编辑功能</h3>
+          <p>输入密码后，才能新增或删除项目与经历。这层锁主要用于保护当前浏览器里的编辑入口。</p>
+        </div>
+        <button class="icon-btn" type="button" id="closeAdminAuthModal" aria-label="关闭" onclick="window.closeAdminAuthModal && window.closeAdminAuthModal()">×</button>
+      </div>
+      <form class="project-form" id="adminAuthForm">
+        <label class="form-field">
+          <span>编辑密码</span>
+          <input type="password" id="adminPasswordInput" placeholder="输入密码后解锁编辑功能" required />
+        </label>
+        <div class="form-error" id="adminAuthError" hidden></div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" type="button" id="cancelAdminAuth" onclick="window.closeAdminAuthModal && window.closeAdminAuthModal()">取消</button>
+          <button class="btn btn-primary" type="submit">解锁</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
-    const STORAGE_KEY = 'portfolio-custom-projects';
+    const PROJECT_STORAGE_KEY = 'portfolio-custom-projects';
+    const EXPERIENCE_STORAGE_KEY = 'portfolio-custom-experiences';
     const REMOVED_PROJECTS_KEY = 'portfolio-removed-projects';
+    const REMOVED_EXPERIENCES_KEY = 'portfolio-removed-experiences';
+    const ADMIN_PASSWORD_HASH = '6950cc306c72397d2f73a3182a425bfd5653b4283a155933209cd8f094cd9252';
+    const ADMIN_UNLOCK_KEY = 'portfolio-admin-unlocked';
     const DEFAULT_PROJECT_FOLDER_SUMMARY = '可选：选择包含 <code>index.html</code> 的项目目录；如果只想放直达链接，也可以直接填写链接。';
     const items = document.querySelectorAll('.reveal');
     const io = new IntersectionObserver((entries) => {
@@ -321,12 +406,27 @@
     }, { threshold: 0.08 });
     items.forEach(item => io.observe(item));
 
+    const adminToggleButton = document.getElementById('adminToggleButton');
     const projectGrid = document.getElementById('projectGrid');
+    const experienceTimeline = document.getElementById('experienceTimeline');
     const projectModal = document.getElementById('projectModal');
+    const experienceModal = document.getElementById('experienceModal');
+    const deleteEntryModal = document.getElementById('deleteEntryModal');
+    const adminAuthModal = document.getElementById('adminAuthModal');
     const projectForm = document.getElementById('projectForm');
+    const experienceForm = document.getElementById('experienceForm');
+    const adminAuthForm = document.getElementById('adminAuthForm');
     const openProjectModalBtn = document.getElementById('openProjectModal');
+    const openExperienceModalBtn = document.getElementById('openExperienceModal');
     const closeProjectModalBtn = document.getElementById('closeProjectModal');
+    const closeExperienceModalBtn = document.getElementById('closeExperienceModal');
+    const closeDeleteEntryModalBtn = document.getElementById('closeDeleteEntryModal');
+    const closeAdminAuthModalBtn = document.getElementById('closeAdminAuthModal');
     const cancelProjectModalBtn = document.getElementById('cancelProjectModal');
+    const cancelExperienceModalBtn = document.getElementById('cancelExperienceModal');
+    const cancelDeleteEntryBtn = document.getElementById('cancelDeleteEntry');
+    const cancelAdminAuthBtn = document.getElementById('cancelAdminAuth');
+    const confirmDeleteEntryBtn = document.getElementById('confirmDeleteEntry');
     const projectNameInput = document.getElementById('projectNameInput');
     const projectSummaryInput = document.getElementById('projectSummaryInput');
     const projectFocusInput = document.getElementById('projectFocusInput');
@@ -335,39 +435,61 @@
     const projectFolderInput = document.getElementById('projectFolderInput');
     const projectFolderSummary = document.getElementById('projectFolderSummary');
     const projectFormError = document.getElementById('projectFormError');
-    const deleteProjectModal = document.getElementById('deleteProjectModal');
-    const closeDeleteProjectModalBtn = document.getElementById('closeDeleteProjectModal');
-    const cancelDeleteProjectBtn = document.getElementById('cancelDeleteProject');
-    const confirmDeleteProjectBtn = document.getElementById('confirmDeleteProject');
-    const deleteProjectMessage = document.getElementById('deleteProjectMessage');
+    const experienceTimeInput = document.getElementById('experienceTimeInput');
+    const experienceTitleInput = document.getElementById('experienceTitleInput');
+    const experienceSummaryInput = document.getElementById('experienceSummaryInput');
+    const experienceFormError = document.getElementById('experienceFormError');
+    const deleteEntryMessage = document.getElementById('deleteEntryMessage');
+    const adminPasswordInput = document.getElementById('adminPasswordInput');
+    const adminAuthError = document.getElementById('adminAuthError');
 
     let selectedProjectFolder = '';
-    let pendingDeleteProject = null;
+    let pendingDeleteEntry = null;
+    let lastAdminTrigger = null;
 
-    function loadCustomProjects() {
+    function loadStoredArray(key) {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(key);
         return raw ? JSON.parse(raw) : [];
       } catch (error) {
         return [];
       }
+    }
+
+    function saveStoredArray(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function loadCustomProjects() {
+      return loadStoredArray(PROJECT_STORAGE_KEY);
     }
 
     function saveCustomProjects(projects) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+      saveStoredArray(PROJECT_STORAGE_KEY, projects);
+    }
+
+    function loadCustomExperiences() {
+      return loadStoredArray(EXPERIENCE_STORAGE_KEY);
+    }
+
+    function saveCustomExperiences(experiences) {
+      saveStoredArray(EXPERIENCE_STORAGE_KEY, experiences);
     }
 
     function loadRemovedProjects() {
-      try {
-        const raw = localStorage.getItem(REMOVED_PROJECTS_KEY);
-        return raw ? JSON.parse(raw) : [];
-      } catch (error) {
-        return [];
-      }
+      return loadStoredArray(REMOVED_PROJECTS_KEY);
     }
 
     function saveRemovedProjects(projectIds) {
-      localStorage.setItem(REMOVED_PROJECTS_KEY, JSON.stringify(projectIds));
+      saveStoredArray(REMOVED_PROJECTS_KEY, projectIds);
+    }
+
+    function loadRemovedExperiences() {
+      return loadStoredArray(REMOVED_EXPERIENCES_KEY);
+    }
+
+    function saveRemovedExperiences(experienceIds) {
+      saveStoredArray(REMOVED_EXPERIENCES_KEY, experienceIds);
     }
 
     function normalizeTags(raw) {
@@ -385,12 +507,34 @@
       return tag;
     }
 
+    function createStorageId(value, prefix) {
+      const id = value
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w\u4e00-\u9fa5-]/g, '')
+        .replace(/-+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+      return id || (prefix + '-' + Date.now());
+    }
+
+    function createDeleteButton(label, adminOnlyClass) {
+      const button = document.createElement('button');
+      button.className = adminOnlyClass ? 'btn btn-danger ' + adminOnlyClass : 'btn btn-danger';
+      button.type = 'button';
+      button.textContent = label;
+      button.setAttribute('data-delete-entry', '');
+      return button;
+    }
+
     function createCustomProjectCard(project) {
       const card = document.createElement('article');
       card.className = 'card reveal demo-card custom-project-card visible';
       card.dataset.customProject = project.id;
-      card.dataset.projectId = project.id;
-      card.dataset.projectKind = 'custom';
+      card.dataset.entryId = project.id;
+      card.dataset.entryType = 'project';
+      card.dataset.entryKind = 'custom';
 
       const topline = document.createElement('div');
       topline.className = 'card-topline';
@@ -436,11 +580,7 @@
       viewLink.rel = 'noopener';
       viewLink.textContent = '查看项目';
 
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'btn btn-danger';
-      removeBtn.type = 'button';
-      removeBtn.textContent = '删除项目';
-      removeBtn.setAttribute('data-delete-project', '');
+      const removeBtn = createDeleteButton('删除项目', 'admin-only');
 
       actions.append(viewLink, removeBtn);
 
@@ -453,11 +593,45 @@
       return card;
     }
 
+    function createCustomExperienceCard(experience) {
+      const card = document.createElement('article');
+      card.className = 'card reveal timeline-card custom-experience-card visible';
+      card.dataset.customExperience = experience.id;
+      card.dataset.entryId = experience.id;
+      card.dataset.entryType = 'experience';
+      card.dataset.entryKind = 'custom';
+
+      const time = document.createElement('div');
+      time.className = 'timeline-time';
+      time.textContent = experience.time;
+
+      const title = document.createElement('h3');
+      title.textContent = experience.title;
+
+      const desc = document.createElement('p');
+      desc.textContent = experience.summary;
+
+      const actions = document.createElement('div');
+      actions.className = 'timeline-actions admin-only-flex';
+      actions.appendChild(createDeleteButton('删除经历'));
+
+      card.append(time, title, desc, actions);
+      return card;
+    }
+
     function renderCustomProjects() {
       document.querySelectorAll('[data-custom-project]').forEach(node => node.remove());
       const projects = loadCustomProjects();
       projects.forEach(project => {
         projectGrid.appendChild(createCustomProjectCard(project));
+      });
+    }
+
+    function renderCustomExperiences() {
+      document.querySelectorAll('[data-custom-experience]').forEach(node => node.remove());
+      const experiences = loadCustomExperiences();
+      experiences.forEach(experience => {
+        experienceTimeline.appendChild(createCustomExperienceCard(experience));
       });
     }
 
@@ -467,26 +641,74 @@
       document.documentElement.classList.toggle('modal-open', hasOpenModal);
     }
 
-    function setProjectModalOpen(isOpen) {
-      projectModal.hidden = !isOpen;
-      projectModal.style.display = isOpen ? 'grid' : 'none';
-      projectModal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+    function setModalOpen(modal, isOpen) {
+      modal.hidden = !isOpen;
+      modal.style.display = isOpen ? 'grid' : 'none';
+      modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
       syncModalOpenState();
     }
 
+    function isAdminUnlocked() {
+      return sessionStorage.getItem(ADMIN_UNLOCK_KEY) === 'true';
+    }
+
+    function updateAdminLockUI() {
+      const unlocked = isAdminUnlocked();
+      document.body.dataset.adminAuth = unlocked ? 'true' : 'false';
+      adminToggleButton.textContent = unlocked ? '退出编辑' : '解锁编辑';
+      adminToggleButton.classList.toggle('is-unlocked', unlocked);
+      adminToggleButton.setAttribute('aria-pressed', unlocked ? 'true' : 'false');
+    }
+
+    function setAdminUnlocked(isUnlocked) {
+      if (isUnlocked) {
+        sessionStorage.setItem(ADMIN_UNLOCK_KEY, 'true');
+      } else {
+        sessionStorage.removeItem(ADMIN_UNLOCK_KEY);
+      }
+      updateAdminLockUI();
+    }
+
+    function openAdminAuthModal(trigger) {
+      lastAdminTrigger = trigger || adminToggleButton;
+      adminAuthForm.reset();
+      setAdminAuthError('');
+      setModalOpen(adminAuthModal, true);
+      adminPasswordInput.focus();
+    }
+
+    function closeAdminAuthModal() {
+      setModalOpen(adminAuthModal, false);
+      adminAuthForm.reset();
+      setAdminAuthError('');
+      if (lastAdminTrigger) {
+        lastAdminTrigger.focus();
+      }
+    }
+
+    function ensureAdminAccess(trigger) {
+      if (isAdminUnlocked()) {
+        return true;
+      }
+      openAdminAuthModal(trigger);
+      return false;
+    }
+
     function openProjectModal() {
-      setProjectModalOpen(true);
+      if (!ensureAdminAccess(openProjectModalBtn)) {
+        return;
+      }
+      setModalOpen(projectModal, true);
       projectNameInput.focus();
     }
 
     function closeProjectModal() {
-      setProjectModalOpen(false);
+      setModalOpen(projectModal, false);
       projectForm.reset();
       selectedProjectFolder = '';
       projectFolderSummary.innerHTML = DEFAULT_PROJECT_FOLDER_SUMMARY;
-      projectFormError.hidden = true;
-      projectFormError.textContent = '';
-      openProjectModalBtn.focus();
+      setProjectFormError('');
+      (isAdminUnlocked() ? openProjectModalBtn : adminToggleButton).focus();
     }
 
     function setProjectFormError(message) {
@@ -494,78 +716,158 @@
       projectFormError.textContent = message || '';
     }
 
-    function setDeleteProjectModalOpen(isOpen) {
-      deleteProjectModal.hidden = !isOpen;
-      deleteProjectModal.style.display = isOpen ? 'grid' : 'none';
-      deleteProjectModal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-      syncModalOpenState();
+    function openExperienceModal() {
+      if (!ensureAdminAccess(openExperienceModalBtn)) {
+        return;
+      }
+      setModalOpen(experienceModal, true);
+      experienceTimeInput.focus();
     }
 
-    function closeDeleteProjectModal() {
-      const trigger = pendingDeleteProject && pendingDeleteProject.trigger;
-      setDeleteProjectModalOpen(false);
-      pendingDeleteProject = null;
-      if (trigger) {
+    function closeExperienceModal() {
+      setModalOpen(experienceModal, false);
+      experienceForm.reset();
+      setExperienceFormError('');
+      (isAdminUnlocked() ? openExperienceModalBtn : adminToggleButton).focus();
+    }
+
+    function setExperienceFormError(message) {
+      experienceFormError.hidden = !message;
+      experienceFormError.textContent = message || '';
+    }
+
+    function setDeleteEntryModalOpen(isOpen) {
+      setModalOpen(deleteEntryModal, isOpen);
+    }
+
+    function closeDeleteEntryModal() {
+      const trigger = pendingDeleteEntry && pendingDeleteEntry.trigger;
+      pendingDeleteEntry = null;
+      setDeleteEntryModalOpen(false);
+      if (trigger && isAdminUnlocked()) {
         trigger.focus();
       }
     }
 
-    function animateProjectRemoval(card, onComplete) {
+    function setAdminAuthError(message) {
+      adminAuthError.hidden = !message;
+      adminAuthError.textContent = message || '';
+    }
+
+    function animateCardRemoval(card, onComplete) {
       card.classList.add('is-removing');
       window.setTimeout(() => {
         onComplete();
       }, 360);
     }
 
-    function removeProjectCard(card) {
-      const projectId = card.dataset.projectId;
-      const projectKind = card.dataset.projectKind || 'default';
+    function removeManagedEntryCard(card) {
+      const entryId = card.dataset.entryId;
+      const entryType = card.dataset.entryType;
+      const entryKind = card.dataset.entryKind || 'default';
 
-      animateProjectRemoval(card, () => {
-        if (projectKind === 'custom') {
-          const projects = loadCustomProjects().filter(project => project.id !== projectId);
-          saveCustomProjects(projects);
+      animateCardRemoval(card, () => {
+        if (entryType === 'project') {
+          if (entryKind === 'custom') {
+            const projects = loadCustomProjects().filter(project => project.id !== entryId);
+            saveCustomProjects(projects);
+          } else {
+            const removedProjects = new Set(loadRemovedProjects());
+            removedProjects.add(entryId);
+            saveRemovedProjects(Array.from(removedProjects));
+          }
         } else {
-          const removedProjects = new Set(loadRemovedProjects());
-          removedProjects.add(projectId);
-          saveRemovedProjects(Array.from(removedProjects));
+          if (entryKind === 'custom') {
+            const experiences = loadCustomExperiences().filter(experience => experience.id !== entryId);
+            saveCustomExperiences(experiences);
+          } else {
+            const removedExperiences = new Set(loadRemovedExperiences());
+            removedExperiences.add(entryId);
+            saveRemovedExperiences(Array.from(removedExperiences));
+          }
         }
 
         card.remove();
       });
     }
 
-    function openDeleteProjectModal(card, trigger) {
-      const projectName = (card.querySelector('h3') && card.querySelector('h3').textContent.trim()) || '这个项目';
-      pendingDeleteProject = { card, trigger };
-      deleteProjectMessage.textContent = '确定要删除“' + projectName + '”吗？删除后会直接从当前页面移除。';
-      setDeleteProjectModalOpen(true);
-      confirmDeleteProjectBtn.focus();
+    function openDeleteEntryModal(card, trigger) {
+      if (!ensureAdminAccess(trigger)) {
+        return;
+      }
+
+      const entryName = (card.querySelector('h3') && card.querySelector('h3').textContent.trim()) || '这项内容';
+      const entryLabel = card.dataset.entryType === 'experience' ? '这条经历' : '这个项目';
+      pendingDeleteEntry = { card, trigger };
+      deleteEntryMessage.textContent = '确定要删除“' + entryName + '”' + entryLabel + '吗？删除后会直接从当前页面移除。';
+      setDeleteEntryModalOpen(true);
+      confirmDeleteEntryBtn.focus();
     }
 
-    function restoreRemovedDefaultProjects() {
+    function restoreRemovedDefaultEntries() {
       const removedProjects = new Set(loadRemovedProjects());
-      document.querySelectorAll('[data-project-kind="default"]').forEach(card => {
-        if (removedProjects.has(card.dataset.projectId)) {
+      document.querySelectorAll('[data-entry-type="project"][data-entry-kind="default"]').forEach(card => {
+        if (removedProjects.has(card.dataset.entryId)) {
+          card.remove();
+        }
+      });
+
+      const removedExperiences = new Set(loadRemovedExperiences());
+      document.querySelectorAll('[data-entry-type="experience"][data-entry-kind="default"]').forEach(card => {
+        if (removedExperiences.has(card.dataset.entryId)) {
           card.remove();
         }
       });
     }
 
+    async function hashText(value) {
+      const data = new TextEncoder().encode(value);
+      const digest = await window.crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(digest)).map(byte => byte.toString(16).padStart(2, '0')).join('');
+    }
+
     openProjectModalBtn.addEventListener('click', openProjectModal);
+    openExperienceModalBtn.addEventListener('click', openExperienceModal);
     closeProjectModalBtn.addEventListener('click', closeProjectModal);
+    closeExperienceModalBtn.addEventListener('click', closeExperienceModal);
     cancelProjectModalBtn.addEventListener('click', closeProjectModal);
-    closeDeleteProjectModalBtn.addEventListener('click', closeDeleteProjectModal);
-    cancelDeleteProjectBtn.addEventListener('click', closeDeleteProjectModal);
-    confirmDeleteProjectBtn.addEventListener('click', () => {
-      if (!pendingDeleteProject) {
+    cancelExperienceModalBtn.addEventListener('click', closeExperienceModal);
+    closeDeleteEntryModalBtn.addEventListener('click', closeDeleteEntryModal);
+    cancelDeleteEntryBtn.addEventListener('click', closeDeleteEntryModal);
+    closeAdminAuthModalBtn.addEventListener('click', closeAdminAuthModal);
+    cancelAdminAuthBtn.addEventListener('click', closeAdminAuthModal);
+
+    adminToggleButton.addEventListener('click', () => {
+      if (isAdminUnlocked()) {
+        setAdminUnlocked(false);
+        if (projectModal.style.display !== 'none') {
+          closeProjectModal();
+        }
+        if (experienceModal.style.display !== 'none') {
+          closeExperienceModal();
+        }
+        if (deleteEntryModal.style.display !== 'none') {
+          closeDeleteEntryModal();
+        }
+        if (adminAuthModal.style.display !== 'none') {
+          closeAdminAuthModal();
+        }
+        adminToggleButton.focus();
         return;
       }
 
-      const { card } = pendingDeleteProject;
-      setDeleteProjectModalOpen(false);
-      pendingDeleteProject = null;
-      removeProjectCard(card);
+      openAdminAuthModal(adminToggleButton);
+    });
+
+    confirmDeleteEntryBtn.addEventListener('click', () => {
+      if (!pendingDeleteEntry) {
+        return;
+      }
+
+      const { card } = pendingDeleteEntry;
+      pendingDeleteEntry = null;
+      setDeleteEntryModalOpen(false);
+      removeManagedEntryCard(card);
     });
 
     projectModal.addEventListener('click', (event) => {
@@ -574,33 +876,62 @@
       }
     });
 
-    deleteProjectModal.addEventListener('click', (event) => {
-      if (event.target === deleteProjectModal || event.target.dataset.close === 'delete-project-modal') {
-        closeDeleteProjectModal();
+    experienceModal.addEventListener('click', (event) => {
+      if (event.target === experienceModal || event.target.dataset.close === 'experience-modal') {
+        closeExperienceModal();
+      }
+    });
+
+    deleteEntryModal.addEventListener('click', (event) => {
+      if (event.target === deleteEntryModal || event.target.dataset.close === 'delete-entry-modal') {
+        closeDeleteEntryModal();
+      }
+    });
+
+    adminAuthModal.addEventListener('click', (event) => {
+      if (event.target === adminAuthModal || event.target.dataset.close === 'admin-auth-modal') {
+        closeAdminAuthModal();
       }
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && projectModal.style.display !== 'none') {
+      if (event.key === 'Escape' && adminAuthModal.style.display !== 'none') {
+        closeAdminAuthModal();
+      } else if (event.key === 'Escape' && deleteEntryModal.style.display !== 'none') {
+        closeDeleteEntryModal();
+      } else if (event.key === 'Escape' && experienceModal.style.display !== 'none') {
+        closeExperienceModal();
+      } else if (event.key === 'Escape' && projectModal.style.display !== 'none') {
         closeProjectModal();
-      }
-      if (event.key === 'Escape' && deleteProjectModal.style.display !== 'none') {
-        closeDeleteProjectModal();
       }
     });
 
     projectGrid.addEventListener('click', (event) => {
-      const deleteBtn = event.target.closest('[data-delete-project]');
+      const deleteBtn = event.target.closest('[data-delete-entry]');
       if (!deleteBtn) {
         return;
       }
 
-      const card = deleteBtn.closest('[data-project-id]');
+      const card = deleteBtn.closest('[data-entry-id]');
       if (!card) {
         return;
       }
 
-      openDeleteProjectModal(card, deleteBtn);
+      openDeleteEntryModal(card, deleteBtn);
+    });
+
+    experienceTimeline.addEventListener('click', (event) => {
+      const deleteBtn = event.target.closest('[data-delete-entry]');
+      if (!deleteBtn) {
+        return;
+      }
+
+      const card = deleteBtn.closest('[data-entry-id]');
+      if (!card) {
+        return;
+      }
+
+      openDeleteEntryModal(card, deleteBtn);
     });
 
     projectFolderInput.addEventListener('change', () => {
@@ -623,6 +954,10 @@
 
     projectForm.addEventListener('submit', (event) => {
       event.preventDefault();
+      if (!isAdminUnlocked()) {
+        openAdminAuthModal(openProjectModalBtn);
+        return;
+      }
       setProjectFormError('');
 
       const name = projectNameInput.value.trim();
@@ -647,7 +982,7 @@
       }
 
       const projects = loadCustomProjects();
-      const projectId = selectedProjectFolder || name.toLowerCase().replace(/\s+/g, '-');
+      const projectId = selectedProjectFolder || createStorageId(name, 'project');
       const nextProject = {
         id: projectId,
         name,
@@ -670,11 +1005,88 @@
       closeProjectModal();
     });
 
-    restoreRemovedDefaultProjects();
+    experienceForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!isAdminUnlocked()) {
+        openAdminAuthModal(openExperienceModalBtn);
+        return;
+      }
+      setExperienceFormError('');
+
+      const time = experienceTimeInput.value.trim();
+      const title = experienceTitleInput.value.trim();
+      const summary = experienceSummaryInput.value.trim();
+
+      if (!time) {
+        setExperienceFormError('请填写经历时间。');
+        return;
+      }
+
+      if (!title) {
+        setExperienceFormError('请填写经历标题。');
+        return;
+      }
+
+      if (!summary) {
+        setExperienceFormError('请填写经历简介。');
+        return;
+      }
+
+      const experiences = loadCustomExperiences();
+      const experienceId = createStorageId(title, 'experience');
+      const nextExperience = {
+        id: experienceId,
+        time,
+        title,
+        summary
+      };
+
+      const existingIndex = experiences.findIndex(experience => experience.id === experienceId);
+      if (existingIndex >= 0) {
+        experiences[existingIndex] = nextExperience;
+      } else {
+        experiences.push(nextExperience);
+      }
+
+      saveCustomExperiences(experiences);
+      renderCustomExperiences();
+      closeExperienceModal();
+    });
+
+    adminAuthForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      setAdminAuthError('');
+
+      const password = adminPasswordInput.value;
+      if (!password) {
+        setAdminAuthError('请输入编辑密码。');
+        return;
+      }
+
+      if (!window.crypto || !window.crypto.subtle) {
+        setAdminAuthError('当前浏览器环境不支持密码校验，请通过 GitHub Pages 或现代浏览器打开页面。');
+        return;
+      }
+
+      const hash = await hashText(password);
+      if (hash !== ADMIN_PASSWORD_HASH) {
+        setAdminAuthError('密码不正确。');
+        return;
+      }
+
+      setAdminUnlocked(true);
+      closeAdminAuthModal();
+    });
+
+    restoreRemovedDefaultEntries();
     renderCustomProjects();
+    renderCustomExperiences();
+    updateAdminLockUI();
     window.openProjectModal = openProjectModal;
     window.closeProjectModal = closeProjectModal;
-    window.closeDeleteProjectModal = closeDeleteProjectModal;
+    window.closeExperienceModal = closeExperienceModal;
+    window.closeDeleteEntryModal = closeDeleteEntryModal;
+    window.closeAdminAuthModal = closeAdminAuthModal;
   </script>
 </body>
 </html>
