@@ -269,7 +269,7 @@ img { display: block; max-width: 100%; }
   align-items: stretch;
 }
 .demo-grid {
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   padding: 4px 0 0;
 }
 .skills-grid { grid-template-columns: repeat(4, 1fr); }
@@ -520,6 +520,9 @@ img { display: block; max-width: 100%; }
   .contact-card {
     grid-template-columns: 1fr;
   }
+  .demo-grid {
+    grid-template-columns: 1fr;
+  }
   .contact-card { align-items: flex-start; }
   .section-topbar {
     align-items: flex-start;
@@ -538,7 +541,6 @@ img { display: block; max-width: 100%; }
   .container { width: min(calc(100% - 28px), var(--container)); }
   .profile-body, .card, .contact-card { padding: 22px; }
   .contact-card h2 { font-size: 30px; }
-  .demo-grid { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .modal-card { padding: 22px; }
   .modal-head h3 { font-size: 24px; }
