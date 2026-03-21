@@ -294,7 +294,7 @@
         </label>
 
         <div class="folder-summary" id="projectFolderSummary">可选：选择包含 <code>index.html</code> 的项目目录；如果只想放直达链接，也可以直接填写链接。</div>
-        <div class="form-note">当前功能只会生成首页项目卡片，并保存在当前浏览器的本地存储中；不会自动创建 <code>projects/</code> 下的新页面文件。</div>
+        <div class="form-note">当前功能会通过编辑后端把项目卡片信息同步到 GitHub 仓库；如果需要新项目详情页，仍需你自己准备 <code>projects/</code> 下的页面文件。</div>
         <div class="form-error" id="projectFormError" hidden></div>
 
         <div class="form-actions">
@@ -312,7 +312,7 @@
         <div>
           <div class="section-kicker">EXPERIENCE MANAGER</div>
           <h3>添加经历卡片</h3>
-          <p>填写时间、标题和经历简介后，可生成首页经历卡片，并保存在当前浏览器的本地存储中。</p>
+          <p>填写时间、标题和经历简介后，可通过编辑后端把经历卡片同步到 GitHub 仓库。</p>
         </div>
         <button class="icon-btn" type="button" id="closeExperienceModal" aria-label="关闭" onclick="window.closeExperienceModal && window.closeExperienceModal()">×</button>
       </div>
@@ -333,7 +333,7 @@
           <textarea id="experienceSummaryInput" rows="5" placeholder="用一段话概括你的职责、成果或参与内容。" required></textarea>
         </label>
 
-        <div class="form-note">当前功能只会生成首页经历卡片，并保存在当前浏览器的本地存储中；不会自动修改仓库里的原始经历内容。</div>
+        <div class="form-note">当前功能会把经历卡片信息同步到 GitHub 仓库，并触发静态页面内容更新。</div>
         <div class="form-error" id="experienceFormError" hidden></div>
 
         <div class="form-actions">
@@ -355,6 +355,7 @@
         </div>
         <button class="icon-btn" type="button" id="closeDeleteEntryModal" aria-label="关闭" onclick="window.closeDeleteEntryModal && window.closeDeleteEntryModal()">×</button>
       </div>
+      <div class="form-error" id="deleteEntryError" hidden></div>
       <div class="form-actions confirm-actions">
         <button class="btn btn-secondary" type="button" id="cancelDeleteEntry">取消</button>
         <button class="btn btn-danger" type="button" id="confirmDeleteEntry">是，删除</button>
@@ -369,7 +370,7 @@
         <div>
           <div class="section-kicker">EDITOR LOCK</div>
           <h3>解锁编辑功能</h3>
-          <p>输入密码后，才能新增或删除项目与经历。这层锁主要用于保护当前浏览器里的编辑入口。</p>
+          <p>输入密码后，才能通过编辑后端新增或删除项目与经历，并把变更同步到 GitHub 仓库。</p>
         </div>
         <button class="icon-btn" type="button" id="closeAdminAuthModal" aria-label="关闭" onclick="window.closeAdminAuthModal && window.closeAdminAuthModal()">×</button>
       </div>
@@ -387,7 +388,9 @@
     </div>
   </div>
 
-  <script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script type="text/plain" id="legacyPortfolioEditorScript">
     const PROJECT_STORAGE_KEY = 'portfolio-custom-projects';
     const EXPERIENCE_STORAGE_KEY = 'portfolio-custom-experiences';
     const REMOVED_PROJECTS_KEY = 'portfolio-removed-projects';
