@@ -54,13 +54,14 @@
   const adminPasswordInput = document.getElementById('adminPasswordInput');
   const adminAuthError = document.getElementById('adminAuthError');
 
-  let selectedProjectFolder = '';
-  let pendingDeleteEntry = null;
-  let lastAdminTrigger = null;
-  let siteContent = normalizeSiteContent({
+  const fallbackSiteContent = normalizeSiteContent({
     projects: extractProjectsFromDOM(),
     experiences: extractExperiencesFromDOM()
   });
+  let selectedProjectFolder = '';
+  let pendingDeleteEntry = null;
+  let lastAdminTrigger = null;
+  let siteContent = fallbackSiteContent;
 
   function firstDirectChildByTag(node, tagName) {
     return Array.from(node.children).find((child) => child.tagName === tagName.toUpperCase()) || null;
@@ -181,6 +182,10 @@
     return EDITOR_API_BASE ? EDITOR_API_BASE + path : path;
   }
 
+  function finishHydration() {
+    document.documentElement.classList.remove('portfolio-hydrating');
+  }
+
   async function apiRequest(path, options = {}) {
     const headers = {
       ...(options.headers || {})
@@ -275,6 +280,7 @@
     if (EDITOR_API_BASE) {
       try {
         await loadSiteContentFromApi();
+        finishHydration();
         return;
       } catch (error) {
         console.warn('Failed to load API content, falling back to static JSON:', error);
@@ -284,8 +290,11 @@
     try {
       await loadSiteContentFromStaticJson();
     } catch (error) {
+      siteContent = fallbackSiteContent;
       renderAll();
       console.warn('Failed to load site content:', error);
+    } finally {
+      finishHydration();
     }
   }
 
@@ -874,7 +883,6 @@
     }
   });
 
-  renderAll();
   loadSiteContent();
 
   window.openProjectModal = openProjectModal;
