@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+dist/
+build/
+.DS_Store
+# private knowledge assets
+data/indexes/
+data/knowledge_base/imported_office/

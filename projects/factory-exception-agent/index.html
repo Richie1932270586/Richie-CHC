@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Factory Exception Agent｜厂内物流助手</title>
+    <meta
+      name="description"
+      content="基于厂内物流实习 SOP 构建的单 Agent demo，支持日常对话、SOP 问答、RAG 检索、动作草稿生成与人工确认。"
+    />
+    <script src="../../config.js"></script>
+    <link rel="stylesheet" href="./apps/web/dist/demo.css" />
+    <style>
+      body {
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at top left, rgba(11, 114, 133, 0.14), transparent 26%),
+          radial-gradient(circle at top right, rgba(15, 23, 32, 0.08), transparent 22%),
+          linear-gradient(180deg, #edf2f5 0%, #f7f9fb 100%);
+      }
+
+      .page-shell {
+        padding: 28px clamp(18px, 3vw, 40px) 36px;
+        display: grid;
+        gap: 22px;
+      }
+
+      .project-intro {
+        display: grid;
+        gap: 16px;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        color: var(--ink);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .back-link:hover {
+        color: var(--accent-strong);
+      }
+
+      .intro-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.9fr);
+        gap: 18px;
+      }
+
+      .intro-card,
+      .setup-card {
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(21, 35, 45, 0.1);
+        border-radius: 24px;
+        box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+        backdrop-filter: blur(12px);
+      }
+
+      .intro-card {
+        padding: clamp(22px, 3vw, 34px);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(11, 114, 133, 0.08);
+        color: var(--accent-strong);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--accent);
+      }
+
+      h1 {
+        margin: 16px 0 12px;
+        font-size: clamp(34px, 4.8vw, 56px);
+        line-height: 1.02;
+        letter-spacing: -0.04em;
+      }
+
+      .intro-card p {
+        margin: 0;
+        color: var(--subtle);
+        line-height: 1.75;
+        font-size: 15px;
+      }
+
+      .chip-row {
+        margin-top: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .chip-row span {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(15, 23, 32, 0.06);
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .setup-card {
+        padding: 22px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .setup-card h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .setup-card p,
+      .setup-card li {
+        margin: 0;
+        color: var(--subtle);
+        line-height: 1.65;
+        font-size: 14px;
+      }
+
+      .setup-card code {
+        font-family: "Consolas", "Courier New", monospace;
+        font-size: 13px;
+      }
+
+      .command-block {
+        margin: 0;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: #0f1720;
+        color: #e5edf4;
+        overflow: auto;
+        font-family: "Consolas", "Courier New", monospace;
+        font-size: 13px;
+        line-height: 1.65;
+      }
+
+      .flat-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .demo-shell .app-shell {
+        height: min(940px, calc(100vh - 210px));
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 28px 70px rgba(15, 23, 42, 0.14);
+        border: 1px solid rgba(21, 35, 45, 0.08);
+      }
+
+      @media (max-width: 1024px) {
+        .intro-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 820px) {
+        .page-shell {
+          padding: 18px 14px 24px;
+        }
+
+        .demo-shell .app-shell {
+          height: auto;
+          min-height: 100vh;
+          border-radius: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="project-intro">
+        <a class="back-link" href="../../index.html#demo">← 返回作品集</a>
+        <div class="intro-grid">
+          <article class="intro-card">
+            <span class="eyebrow">AI Agent Demo</span>
+            <h1>厂内物流助手</h1>
+            <p>
+              这是我基于物流实习期间整理的 SOP、FAQ 和异常规则做出的单 Agent demo。它保留了厂内物流场景最关键的能力组合：自然对话入口、RAG 检索、本地查表、动作草稿生成，以及高风险动作的人机确认。
+            </p>
+            <div class="chip-row">
+              <span>单 Agent</span>
+              <span>RAG</span>
+              <span>Tools</span>
+              <span>人工确认</span>
+              <span>多会话聊天</span>
+            </div>
+          </article>
+
+          <aside class="setup-card">
+            <h2>接入方式</h2>
+            <p>本页直接复用现有的 dist 聊天界面，默认会连接 <code id="agentApiBaseLabel">http://127.0.0.1:8000</code>。</p>
+            <ul class="flat-list">
+              <li>本地预览时，先启动 Agent 后端，再打开本页即可直接对话。</li>
+              <li>如果后端不在本机 <code>8000</code> 端口，可在根目录 <code>config.js</code> 修改 <code>FACTORY_AGENT_API_BASE</code>。</li>
+              <li>也可以通过 URL 参数 <code>?api=https://your-agent-host</code> 临时覆盖连接地址。</li>
+            </ul>
+            <pre class="command-block">cd "C:\Users\陈慧驰\Downloads\Richie-CHC (1)\Richie-CHC\projects\factory-exception-agent"
+python -m uvicorn app.main:app --app-dir apps/api --host 127.0.0.1 --port 8000 --reload</pre>
+          </aside>
+        </div>
+      </section>
+
+      <section class="demo-shell">
+        <div class="app-shell">
+          <aside class="sidebar">
+            <div class="sidebar-top">
+              <div class="sidebar-brand">
+                <div class="brand-mark">FE</div>
+                <div>
+                  <strong>厂内物流助手</strong>
+                  <p>SOP 查询 / 异常处理 / 质检协同</p>
+                </div>
+              </div>
+
+              <button id="newThreadButton" class="sidebar-primary">+ 新建会话</button>
+
+              <section class="sidebar-section">
+                <div class="sidebar-section-title">会话记录</div>
+                <div id="threadList" class="thread-list"></div>
+              </section>
+            </div>
+
+            <div class="sidebar-bottom">
+              <details class="sidebar-fold">
+                <summary>知识库</summary>
+                <div class="fold-body">
+                  <div class="fold-row">
+                    <span class="fold-label">已索引</span>
+                    <span class="status-tag" id="docCountTag">0 份文档</span>
+                  </div>
+                  <input id="sourceDirInput" class="path-input" placeholder="例如：E:\实习工作\中都物流-小米工作文件\小米汽车作业标准流程" />
+                  <div class="stack-actions">
+                    <button id="importButton" class="primary-button">导入文件夹到 RAG</button>
+                    <button id="refreshDocsButton" class="ghost-button">刷新文档列表</button>
+                  </div>
+                  <label class="toggle inline-toggle">
+                    <input id="replaceExisting" type="checkbox" checked />
+                    <span>覆盖同一路径上次导入结果</span>
+                  </label>
+                  <div id="latestImportBox" class="mini-panel empty">还没有导入记录。</div>
+                  <div id="documentList" class="compact-list"></div>
+                </div>
+              </details>
+
+              <details class="sidebar-fold">
+                <summary>运行设置</summary>
+                <div class="fold-body">
+                  <label>
+                    <span>Agent 模式</span>
+                    <select id="agentMode">
+                      <option value="hybrid">hybrid</option>
+                      <option value="only-tool">only-tool</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>RAG 档位</span>
+                    <select id="ragProfile">
+                      <option value="light">light</option>
+                      <option value="full">full</option>
+                    </select>
+                  </label>
+                  <label class="toggle">
+                    <input id="ragEnabled" type="checkbox" checked />
+                    <span>启用 RAG</span>
+                  </label>
+                  <div class="fold-row">
+                    <span class="fold-label">当前模式</span>
+                    <span class="status-tag" id="modeTag">加载中</span>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </aside>
+
+          <main class="main-panel">
+            <header class="chat-header">
+              <div>
+                <h1 id="activeThreadTitle">新会话</h1>
+                <p id="activeThreadMeta" class="chat-subtitle">直接描述现场问题，或输入一个 SOP 名称开始查询。</p>
+              </div>
+              <div class="header-badges">
+                <span class="status-tag" id="activeDocTag">未锁定文档</span>
+                <span class="status-tag" id="threadStatsTag">0 条消息</span>
+              </div>
+            </header>
+
+            <section class="summary-strip">
+              <span class="summary-pill" id="selectedModeTag">等待响应</span>
+              <span class="summary-pill" id="selectedIssueTag">未分类</span>
+              <span class="summary-pill" id="selectedRiskTag">low</span>
+              <span class="summary-pill" id="selectedStepTag">0/0</span>
+            </section>
+
+            <section class="runtime-banner" id="runtimeBanner">
+              <div>
+                <strong id="runtimeTitle">当前运行状态</strong>
+                <p id="runtimeDescription">正在获取模型连接和检索配置。</p>
+              </div>
+            </section>
+
+            <nav class="view-tabs" id="viewTabs">
+              <button class="view-tab active" data-tab="chat">对话</button>
+              <button class="view-tab" data-tab="evidence">引用</button>
+              <button class="view-tab" data-tab="actions">动作</button>
+              <button class="view-tab" data-tab="tools">查询</button>
+            </nav>
+
+            <section class="panel-stack">
+              <section class="view-panel active" id="panel-chat">
+                <div id="messageList" class="message-list"></div>
+              </section>
+
+              <section class="view-panel" id="panel-evidence">
+                <div class="panel-card summary-box" id="summaryBox">选中一条助手回复后，这里会显示结论、风险等级和当前锁定文档。</div>
+                <div class="panel-head">
+                  <h2>证据 / 引用</h2>
+                  <span id="evidenceCount">0 条</span>
+                </div>
+                <div class="list-stack" id="evidenceList"></div>
+              </section>
+
+              <section class="view-panel" id="panel-actions">
+                <div class="panel-head">
+                  <h2>建议动作</h2>
+                  <span id="actionCount">0 个</span>
+                </div>
+                <div class="list-stack" id="actionList"></div>
+                <div class="panel-head second-head">
+                  <h2>人工确认</h2>
+                </div>
+                <div id="confirmationBox" class="panel-card empty">当前回复未命中强制人工确认规则。</div>
+              </section>
+
+              <section class="view-panel" id="panel-tools">
+                <div class="panel-head">
+                  <h2>结构化查询</h2>
+                </div>
+                <div class="list-stack" id="toolList"></div>
+              </section>
+            </section>
+
+            <footer class="composer-shell">
+              <div class="composer">
+                <textarea id="messageInput" placeholder="描述一个异常，或直接提问 SOP"></textarea>
+                <div class="composer-bottom">
+                  <span class="composer-hint" id="composerHint">支持追问：下一步呢 / 注意什么 / 为什么要这样做</span>
+                  <div class="composer-actions">
+                    <button id="stopButton" class="stop-button" type="button" hidden>停止</button>
+                    <button id="submitButton" class="submit-button" type="button">发送</button>
+                  </div>
+                </div>
+              </div>
+            </footer>
+          </main>
+
+          <div id="toastBox" class="toast-layer"></div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      window.FACTORY_AGENT_API_BASE = (
+        new URLSearchParams(window.location.search).get("api") ||
+        window.FACTORY_AGENT_API_BASE ||
+        "http://127.0.0.1:8000"
+      ).trim().replace(/\/$/, "");
+      const agentApiBaseLabel = document.getElementById("agentApiBaseLabel");
+      if (agentApiBaseLabel) {
+        agentApiBaseLabel.textContent = window.FACTORY_AGENT_API_BASE || "same-origin";
+      }
+    </script>
+    <script type="module" src="./apps/web/dist/demo.js"></script>
+  </body>
+</html>

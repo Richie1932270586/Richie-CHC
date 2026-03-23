@@ -1,0 +1,7 @@
+﻿issue_type,department,owner_name,backup_owner,escalation_contact
+短缺,仓储运营,李晨,赵敏,warehouse_lead@factory.demo
+错发,仓储运营,王磊,周倩,warehouse_lead@factory.demo
+不良品,质量管理,陈洁,高远,quality_mgr@factory.demo
+批次异常,质量管理,陈洁,高远,quality_mgr@factory.demo
+库位异常,仓储运营,王磊,周倩,warehouse_lead@factory.demo
+高优先级停线风险,生产协同,刘峰,孙涛,line_lead@factory.demo

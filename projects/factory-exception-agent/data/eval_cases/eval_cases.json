@@ -1,0 +1,150 @@
+[
+  {
+    "id": "eval-01",
+    "question": "产线 A 反馈零件X 短缺，当前批次 B202603，应该怎么处理？",
+    "expected_issue_type": "短缺",
+    "expect_confirmation": false,
+    "required_tools": [
+      "inventory_lookup"
+    ],
+    "overrides": {}
+  },
+  {
+    "id": "eval-02",
+    "question": "收货时发现一箱标签和实物不一致，是否需要升级？",
+    "expected_issue_type": "错发",
+    "expect_confirmation": false,
+    "required_tools": [
+      "incident_lookup"
+    ],
+    "overrides": {}
+  },
+  {
+    "id": "eval-03",
+    "question": "有一批传感器Y 疑似不良品，先做隔离还是直接退库？",
+    "expected_issue_type": "不良品",
+    "expect_confirmation": false,
+    "required_tools": [
+      "incident_lookup"
+    ],
+    "overrides": {}
+  },
+  {
+    "id": "eval-04",
+    "question": "外壳P 批次 B202603 重复异常，是否需要升级质检？",
+    "expected_issue_type": "批次异常",
+    "expect_confirmation": false,
+    "required_tools": [
+      "incident_lookup",
+      "owner_lookup"
+    ],
+    "overrides": {}
+  },
+  {
+    "id": "eval-05",
+    "question": "系统显示轴承M 在 D-02-01，但现场找不到，算库位异常吗？",
+    "expected_issue_type": "库位异常",
+    "expect_confirmation": false,
+    "required_tools": [
+      "owner_lookup"
+    ],
+    "overrides": {}
+  },
+  {
+    "id": "eval-06",
+    "question": "零件X 余量不够，2 小时内可能停线，要不要马上升级？",
+    "expected_issue_type": "高优先级停线风险",
+    "expect_confirmation": true,
+    "required_tools": [
+      "inventory_lookup",
+      "owner_lookup"
+    ],
+    "overrides": {}
+  },
+  {
+    "id": "eval-07",
+    "question": "这批疑似不良品如果要报废，需要直接走报废流程吗？",
+    "expected_issue_type": "不良品",
+    "expect_confirmation": true,
+    "required_tools": [],
+    "overrides": {}
+  },
+  {
+    "id": "eval-08",
+    "question": "需要通知供应商这次标签错贴问题吗？",
+    "expected_issue_type": "错发",
+    "expect_confirmation": true,
+    "required_tools": [],
+    "overrides": {}
+  },
+  {
+    "id": "eval-09",
+    "question": "如果只保留 tools，不开 RAG，零件X 短缺怎么处理？",
+    "expected_issue_type": "短缺",
+    "expect_confirmation": false,
+    "required_tools": [
+      "inventory_lookup"
+    ],
+    "overrides": {
+      "agent_mode": "only-tool",
+      "rag_enabled": false
+    }
+  },
+  {
+    "id": "eval-10",
+    "question": "标签和实物不一致，但没有具体物料号，先做什么？",
+    "expected_issue_type": "错发",
+    "expect_confirmation": false,
+    "required_tools": [],
+    "overrides": {}
+  },
+  {
+    "id": "eval-11",
+    "question": "高优先级停线风险场景里，可以自动通知班组长吗？",
+    "expected_issue_type": "高优先级停线风险",
+    "expect_confirmation": true,
+    "required_tools": [],
+    "overrides": {}
+  },
+  {
+    "id": "eval-12",
+    "question": "外壳P 批次 B202603 在 full-RAG 下应该参考哪些规则？",
+    "expected_issue_type": "批次异常",
+    "expect_confirmation": false,
+    "required_tools": [
+      "incident_lookup"
+    ],
+    "overrides": {
+      "rag_profile": "full"
+    }
+  },
+  {
+    "id": "eval-13",
+    "question": "你可以做什么？",
+    "expected_issue_type": "普通对话",
+    "expect_confirmation": false,
+    "required_tools": [],
+    "expected_conversation_mode": "casual_chat",
+    "max_retrieved_chunks": 0,
+    "overrides": {}
+  },
+  {
+    "id": "eval-14",
+    "question": "你现在在使用什么模型？",
+    "expected_issue_type": "普通对话",
+    "expect_confirmation": false,
+    "required_tools": [],
+    "expected_conversation_mode": "casual_chat",
+    "max_retrieved_chunks": 0,
+    "overrides": {}
+  },
+  {
+    "id": "eval-15",
+    "question": "指导进行冲压车间自制件返修作业",
+    "expected_issue_type": "一般异常咨询",
+    "expect_confirmation": false,
+    "required_tools": [],
+    "expected_conversation_mode": "sop_guidance",
+    "overrides": {}
+  }
+]

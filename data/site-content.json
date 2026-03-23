@@ -18,17 +18,33 @@
     },
     {
       "id": "flowguard-ai",
-      "name": "FlowGuard AI",
-      "summary": "面向物流与供应链异常处理场景的智能协同平台，聚焦异常流转、角色协同、处置闭环与信息透明，支持复杂场景下的决策判断。",
-      "focus": "围绕异常管理与跨角色协同设计产品结构，通过任务分发、进度追踪和管理看板推动异常处理闭环与处置效率提升。",
+      "name": "FlowGuard AI｜厂内物流异常协同平台原型",
+      "summary": "基于厂内物流实习中的异常处理 SOP，设计移动端上报、AI 初判、SOP 指引、工单流转与复盘看板的一体化异常协同平台原型。",
+      "focus": "从一线录入、跨角色协同到管理复盘梳理完整闭环，用静态页面呈现核心页面、信息层级和处理路径。",
       "tags": [
-        "异常识别",
-        "流程闭环",
-        "跨角色协同",
-        "场景化设计"
+        "产品原型",
+        "异常协同",
+        "SOP 设计",
+        "后台看板"
       ],
       "link": "projects/flowguard-ai/",
-      "meta": "异常协同 / 供应链场景",
+      "meta": "产品方案 / 静态原型",
+      "featured": false,
+      "custom": false
+    },
+    {
+      "id": "factory-exception-agent",
+      "name": "Factory Exception Agent｜厂内物流助手",
+      "summary": "基于实习期间整理的 SOP、FAQ 和异常规则，构建单 Agent 的厂内物流异常处理助手，支持日常对话、SOP 问答、查表和动作草稿生成。",
+      "focus": "复用 FastAPI + dist 聊天界面，接入 RAG、本地 tools 和人工确认机制，将静态方案进一步落成可交互 demo。",
+      "tags": [
+        "RAG",
+        "Agent",
+        "SOP 问答",
+        "人工确认"
+      ],
+      "link": "projects/factory-exception-agent/",
+      "meta": "AI Agent / 可交互 Demo",
       "featured": false,
       "custom": false
     },
@@ -47,19 +63,6 @@
       "meta": "空间分析 / 选址辅助系统",
       "featured": false,
       "custom": false
-    },
-    {
-      "id": "test-project-lab",
-      "name": "test",
-      "summary": "test",
-      "focus": "test",
-      "tags": [
-        "test"
-      ],
-      "link": "projects/test-project-lab/",
-      "meta": "自定义项目 / test-project-lab",
-      "featured": false,
-      "custom": true
     }
   ],
   "experiences": [

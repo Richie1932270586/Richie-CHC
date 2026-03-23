@@ -1,0 +1,27 @@
+{
+  "ticket_draft": {
+    "subject_prefix": "异常工单草稿",
+    "description": "生成内部异常工单草稿，用于后续录入系统。",
+    "body_hint": "补充异常发生时间、影响范围和临时处置，再录入企业系统。"
+  },
+  "handling_record": {
+    "subject_prefix": "处理记录草稿",
+    "description": "生成内部处理记录，便于复盘与追踪。",
+    "body_hint": "按事实、判断、动作三个部分填写，避免先写死责任归属。"
+  },
+  "quality_escalation": {
+    "subject_prefix": "质检升级通知草稿",
+    "description": "生成给质检/班组长的升级通知草稿，不直接发送。",
+    "body_hint": "说明是否影响上线、是否需要扩大抽检，并标记待人工确认。"
+  },
+  "owner_assignment": {
+    "subject_prefix": "责任确认草稿",
+    "description": "生成责任部门确认草稿，避免自动归责。",
+    "body_hint": "先写事实，再写待确认的责任部门建议，不直接定责。"
+  },
+  "external_notification": {
+    "subject_prefix": "对外通知草稿",
+    "description": "生成供应商/外部协同通知草稿，必须人工确认后使用。",
+    "body_hint": "只输出可编辑草稿，外发前由负责人确认内容与口径。"
+  }
+}
