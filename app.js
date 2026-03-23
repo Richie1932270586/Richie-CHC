@@ -63,10 +63,6 @@
   let lastAdminTrigger = null;
   let siteContent = fallbackSiteContent;
 
-  function firstDirectChildByTag(node, tagName) {
-    return Array.from(node.children).find((child) => child.tagName === tagName.toUpperCase()) || null;
-  }
-
   function normalizeText(value) {
     return typeof value === 'string' ? value.trim() : '';
   }
@@ -113,10 +109,10 @@
   function extractProjectsFromDOM() {
     return Array.from(projectGrid.querySelectorAll('[data-entry-type="project"]')).map((card) => {
       const title = card.querySelector('h3');
-      const summary = firstDirectChildByTag(card, 'p');
-      const focus = card.querySelector('.sub-block p');
+      const summary = card.querySelector('.project-summary');
+      const focus = card.querySelector('.project-focus-copy');
       const meta = card.querySelector('.meta');
-      const link = card.querySelector('.btn-primary');
+      const link = card.querySelector('.project-cta');
       const tags = Array.from(card.querySelectorAll('.tag-row .tag')).map((tag) => tag.textContent.trim()).filter(Boolean);
 
       return {
@@ -137,7 +133,7 @@
     return Array.from(experienceTimeline.querySelectorAll('[data-entry-type="experience"]')).map((card) => {
       const time = card.querySelector('.timeline-time');
       const title = card.querySelector('h3');
-      const summary = firstDirectChildByTag(card, 'p');
+      const summary = card.querySelector('.experience-summary');
 
       return {
         id: card.dataset.entryId,
@@ -311,6 +307,13 @@
     return tag;
   }
 
+  function createEmptyState(message) {
+    const state = document.createElement('div');
+    state.className = 'empty-state';
+    state.textContent = message;
+    return state;
+  }
+
   function createDeleteButton(label, adminOnlyClass = 'admin-only') {
     const button = document.createElement('button');
     button.className = adminOnlyClass ? 'btn btn-danger ' + adminOnlyClass : 'btn btn-danger';
@@ -322,7 +325,7 @@
 
   function createProjectCard(project) {
     const card = document.createElement('article');
-    card.className = 'card reveal demo-card visible';
+    card.className = 'project-item reveal visible';
     if (project.featured) {
       card.classList.add('featured');
     }
@@ -333,8 +336,15 @@
     card.dataset.entryType = 'project';
     card.dataset.entryKind = 'synced';
 
+    const order = document.createElement('div');
+    order.className = 'project-order';
+    order.setAttribute('aria-hidden', 'true');
+
+    const main = document.createElement('div');
+    main.className = 'project-main';
+
     const topline = document.createElement('div');
-    topline.className = 'card-topline';
+    topline.className = 'project-topline';
 
     const pill = document.createElement('span');
     pill.className = 'pill';
@@ -350,18 +360,25 @@
     title.textContent = project.name;
 
     const desc = document.createElement('p');
+    desc.className = 'project-summary';
     desc.textContent = project.summary;
 
-    const subBlock = document.createElement('div');
-    subBlock.className = 'sub-block';
+    main.append(topline, title, desc);
+
+    const side = document.createElement('div');
+    side.className = 'project-side';
+
+    const focus = document.createElement('div');
+    focus.className = 'project-focus';
 
     const subTitle = document.createElement('h4');
     subTitle.textContent = '项目重点';
 
     const subDesc = document.createElement('p');
+    subDesc.className = 'project-focus-copy';
     subDesc.textContent = project.focus || project.summary;
 
-    subBlock.append(subTitle, subDesc);
+    focus.append(subTitle, subDesc);
 
     const tagRow = document.createElement('div');
     tagRow.className = 'tag-row';
@@ -371,26 +388,26 @@
     actions.className = 'actions';
 
     const viewLink = document.createElement('a');
-    viewLink.className = 'btn btn-primary';
+    viewLink.className = 'btn btn-primary project-cta';
     viewLink.href = project.link;
     viewLink.target = '_blank';
     viewLink.rel = 'noopener';
     viewLink.textContent = '查看项目';
 
     actions.append(viewLink, createDeleteButton('删除项目', 'admin-only'));
+    side.append(focus, actions);
 
-    card.append(topline, title, desc, subBlock);
+    card.append(order, main, side);
     if ((project.tags || []).length) {
       card.append(tagRow);
     }
-    card.append(actions);
 
     return card;
   }
 
   function createExperienceCard(experience) {
     const card = document.createElement('article');
-    card.className = 'card reveal timeline-card visible';
+    card.className = 'experience-item reveal visible';
     if (experience.custom) {
       card.classList.add('custom-experience-card');
     }
@@ -402,22 +419,31 @@
     time.className = 'timeline-time';
     time.textContent = experience.time;
 
+    const main = document.createElement('div');
+    main.className = 'experience-main';
+
     const title = document.createElement('h3');
     title.textContent = experience.title;
 
     const desc = document.createElement('p');
+    desc.className = 'experience-summary';
     desc.textContent = experience.summary;
 
     const actions = document.createElement('div');
     actions.className = 'timeline-actions admin-only-flex';
     actions.appendChild(createDeleteButton('删除经历'));
 
-    card.append(time, title, desc, actions);
+    main.append(title, desc, actions);
+    card.append(time, main);
     return card;
   }
 
   function renderProjects() {
     projectGrid.innerHTML = '';
+    if (!siteContent.projects.length) {
+      projectGrid.appendChild(createEmptyState('当前还没有项目内容。'));
+      return;
+    }
     siteContent.projects.forEach((project) => {
       projectGrid.appendChild(createProjectCard(project));
     });
@@ -425,6 +451,10 @@
 
   function renderExperiences() {
     experienceTimeline.innerHTML = '';
+    if (!siteContent.experiences.length) {
+      experienceTimeline.appendChild(createEmptyState('当前还没有经历内容。'));
+      return;
+    }
     siteContent.experiences.forEach((experience) => {
       experienceTimeline.appendChild(createExperienceCard(experience));
     });

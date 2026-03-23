@@ -5,243 +5,296 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>陈慧驰 | Portfolio</title>
   <meta name="description" content="陈慧驰个人作品集：数据分析、产品思维、供应链、交通与空间选址场景实践。" />
+  <meta name="theme-color" content="#f3ede3" />
   <script>document.documentElement.classList.add('portfolio-hydrating');</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="bg-orb orb-1"></div>
   <div class="bg-orb orb-2"></div>
   <div class="bg-orb orb-3"></div>
+  <div class="page-grain" aria-hidden="true"></div>
 
   <header class="site-header">
     <div class="container nav">
-      <a class="brand" href="#top">
+      <a class="brand" href="#top" aria-label="返回顶部">
         <span class="brand-mark">R</span>
-        <span>Richie CHC</span>
+        <span class="brand-copy">
+          <strong>Richie CHC</strong>
+          <span>Candidate Portfolio</span>
+        </span>
       </a>
       <div class="nav-side">
-        <nav class="nav-links">
+        <nav class="nav-links" aria-label="页面导航">
           <a href="#demo">项目案例</a>
           <a href="#experience">经历</a>
           <a href="#skills">能力</a>
           <a href="#contact">联系我</a>
         </nav>
+        <a class="nav-resume" href="assets/chenhuichi_resume_cn.pdf" target="_blank" rel="noopener">简历</a>
         <button class="btn btn-secondary admin-toggle" type="button" id="adminToggleButton" aria-pressed="false">解锁编辑</button>
       </div>
     </div>
   </header>
 
   <main id="top">
-    <section class="hero section">
-      <div class="container hero-grid">
-        <div class="hero-copy reveal">
-          <div class="kicker">PRODUCT PORTFOLIO</div>
-          <h1>陈慧驰</h1>
-          <div class="english-name">Huichi Chen</div>
-          <p class="hero-title">Data Analytics · Product Thinking · Supply Chain · Transportation · Spatial Analysis</p>
-          <p class="hero-desc">
-            具备数据分析、业务抽象与场景化产品设计能力，关注供应链、运营、交通与空间决策场景中的流程优化与智能化应用。
-          </p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#demo">查看项目</a>
-            <a class="btn btn-secondary" href="assets/chenhuichi_resume_cn.pdf" target="_blank" rel="noopener">下载简历</a>
+    <section class="hero">
+      <div class="hero-shell">
+        <div class="container hero-grid">
+          <div class="hero-copy reveal">
+            <div class="hero-kickers">
+              <div class="kicker">Candidate Portfolio</div>
+              <div class="hero-badge">Shenzhen</div>
+            </div>
+            <h1>陈慧驰</h1>
+            <div class="english-name">Huichi Chen</div>
+            <p class="hero-title">Data Analytics · Product Thinking · Supply Chain · Transportation · Spatial Analysis</p>
+            <p class="hero-desc">
+              具备数据分析、业务抽象与场景化产品设计能力，关注供应链、运营、交通与空间决策场景中的流程优化与智能化应用。
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#demo">查看项目</a>
+              <a class="btn btn-secondary" href="assets/chenhuichi_resume_cn.pdf" target="_blank" rel="noopener">下载简历</a>
+            </div>
+            <div class="hero-links">
+              <a href="#experience">查看经历</a>
+              <a href="#skills">能力结构</a>
+              <a href="#contact">联系方式</a>
+            </div>
           </div>
-        </div>
 
-        <aside class="profile-card reveal">
-          <div class="profile-banner"></div>
-          <div class="profile-body">
-            <img class="avatar" src="./assets/avatar.png" alt="陈慧驰头像" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='/Richie-CHC/assets/avatar.png';}" />
-            <h2>陈慧驰</h2>
-            <p class="muted">Data Analytics / Product Thinking</p>
-            <ul class="info-list">
-              <li><span>Email</span><strong>chenhuichi83@gmail.com</strong></li>
-              <li><span>WeChat</span><strong>chen32270586</strong></li>
-              <li><span>Location</span><strong>Shenzhen</strong></li>
-              <li><span>Focus</span><strong>Supply Chain / AI / Product</strong></li>
-            </ul>
-          </div>
-        </aside>
+          <aside class="hero-profile reveal" aria-label="个人信息">
+            <div class="portrait-stage">
+              <div class="portrait-meta">
+                <span>Candidate Brief</span>
+                <span>Data Analytics / Product Thinking</span>
+              </div>
+              <img class="avatar" src="./assets/avatar.png" alt="陈慧驰头像" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='/Richie-CHC/assets/avatar.png';}" />
+            </div>
+            <dl class="info-list">
+              <div>
+                <dt>Email</dt>
+                <dd>chenhuichi83@gmail.com</dd>
+              </div>
+              <div>
+                <dt>WeChat</dt>
+                <dd>chen32270586</dd>
+              </div>
+              <div>
+                <dt>Location</dt>
+                <dd>Shenzhen</dd>
+              </div>
+              <div>
+                <dt>Focus</dt>
+                <dd>Supply Chain / AI / Product</dd>
+              </div>
+            </dl>
+          </aside>
+        </div>
       </div>
     </section>
 
     <section class="section" id="demo">
-      <div class="container">
-        <div class="section-topbar reveal">
-          <div class="section-head section-head-inline">
-            <div class="section-kicker">PROJECT CASES</div>
-            <h2>项目案例</h2>
-            <p>围绕运营协同、供应链异常处理与空间选址分析场景，展示从问题拆解、分析建模到产品化表达的项目实践。</p>
-          </div>
+      <div class="container section-layout">
+        <div class="section-head section-lead reveal">
+          <div class="section-kicker">PROJECT CASES</div>
+          <h2>项目案例</h2>
+          <p>围绕运营协同、供应链异常处理与空间选址分析场景，展示从问题拆解、分析建模到产品化表达的项目实践。</p>
           <div class="section-top-actions">
             <button class="btn btn-secondary admin-only" type="button" id="openProjectModal">添加项目</button>
           </div>
         </div>
 
-        <div class="project-rail reveal">
-          <div class="card-grid demo-grid" id="projectGrid">
-          <article class="card reveal demo-card featured" data-entry-id="ops-copilot" data-entry-type="project" data-entry-kind="default">
-            <div class="card-topline">
-              <span class="pill">项目案例</span>
-              <span class="meta">运营工作台 / 场景化设计</span>
-            </div>
-            <h3>Ride-hailing Ops Copilot</h3>
-            <p>
-              面向高频运营活动场景的智能运营工作台，围绕任务组织、规则理解、配置检查与管理视角，提升运营效率并推动流程标准化。
-            </p>
-            <div class="sub-block">
-              <h4>项目重点</h4>
-              <p>聚焦运营协同、风险前置识别与 AI 辅助决策，通过任务中心、配置校验和主管看板支撑活动配置与执行管理。</p>
-            </div>
-            <div class="tag-row">
-              <span class="tag">运营效率</span>
-              <span class="tag">流程标准化</span>
-              <span class="tag">风险识别</span>
-              <span class="tag">决策支持</span>
-            </div>
-            <div class="actions">
-              <a class="btn btn-primary" href="projects/ops-copilot/" target="_blank" rel="noopener">查看项目</a>
-              <button class="btn btn-danger admin-only" type="button" data-delete-entry>删除项目</button>
-            </div>
-          </article>
+        <div class="project-stage reveal">
+          <div class="project-list" id="projectGrid">
+            <article class="project-item featured reveal" data-entry-id="ops-copilot" data-entry-type="project" data-entry-kind="default">
+              <div class="project-order" aria-hidden="true"></div>
+              <div class="project-main">
+                <div class="project-topline">
+                  <span class="pill">项目案例</span>
+                  <span class="meta">运营工作台 / 场景化设计</span>
+                </div>
+                <h3>Ride-hailing Ops Copilot</h3>
+                <p class="project-summary">
+                  面向高频运营活动场景的智能运营工作台，围绕任务组织、规则理解、配置检查与管理视角，提升运营效率并推动流程标准化。
+                </p>
+              </div>
+              <div class="project-side">
+                <div class="project-focus">
+                  <h4>项目重点</h4>
+                  <p class="project-focus-copy">聚焦运营协同、风险前置识别与 AI 辅助决策，通过任务中心、配置校验和主管看板支撑活动配置与执行管理。</p>
+                </div>
+                <div class="actions">
+                  <a class="btn btn-primary project-cta" href="projects/ops-copilot/" target="_blank" rel="noopener">查看项目</a>
+                  <button class="btn btn-danger admin-only" type="button" data-delete-entry>删除项目</button>
+                </div>
+              </div>
+              <div class="tag-row">
+                <span class="tag">运营效率</span>
+                <span class="tag">流程标准化</span>
+                <span class="tag">风险识别</span>
+                <span class="tag">决策支持</span>
+              </div>
+            </article>
 
-          <article class="card reveal demo-card" data-entry-id="flowguard-ai" data-entry-type="project" data-entry-kind="default">
-            <div class="card-topline">
-              <span class="pill">项目案例</span>
-              <span class="meta">产品方案 / 静态原型</span>
-            </div>
-            <h3>FlowGuard AI｜厂内物流异常协同平台原型</h3>
-            <p>
-              基于厂内物流实习中的异常处理 SOP，设计移动端上报、AI 初判、SOP 指引、工单流转与复盘看板的一体化异常协同平台原型。
-            </p>
-            <div class="sub-block">
-              <h4>项目重点</h4>
-              <p>从一线录入、跨角色协同到管理复盘梳理完整闭环，用静态页面呈现核心页面、信息层级和处理路径。</p>
-            </div>
-            <div class="tag-row">
-              <span class="tag">产品原型</span>
-              <span class="tag">异常协同</span>
-              <span class="tag">SOP 设计</span>
-              <span class="tag">后台看板</span>
-            </div>
-            <div class="actions">
-              <a class="btn btn-primary" href="projects/flowguard-ai/" target="_blank" rel="noopener">查看项目</a>
-              <button class="btn btn-danger admin-only" type="button" data-delete-entry>删除项目</button>
-            </div>
-          </article>
+            <article class="project-item reveal" data-entry-id="flowguard-ai" data-entry-type="project" data-entry-kind="default">
+              <div class="project-order" aria-hidden="true"></div>
+              <div class="project-main">
+                <div class="project-topline">
+                  <span class="pill">项目案例</span>
+                  <span class="meta">产品方案 / 静态原型</span>
+                </div>
+                <h3>FlowGuard AI｜厂内物流异常协同平台原型</h3>
+                <p class="project-summary">
+                  基于厂内物流实习中的异常处理 SOP，设计移动端上报、AI 初判、SOP 指引、工单流转与复盘看板的一体化异常协同平台原型。
+                </p>
+              </div>
+              <div class="project-side">
+                <div class="project-focus">
+                  <h4>项目重点</h4>
+                  <p class="project-focus-copy">从一线录入、跨角色协同到管理复盘梳理完整闭环，用静态页面呈现核心页面、信息层级和处理路径。</p>
+                </div>
+                <div class="actions">
+                  <a class="btn btn-primary project-cta" href="projects/flowguard-ai/" target="_blank" rel="noopener">查看项目</a>
+                  <button class="btn btn-danger admin-only" type="button" data-delete-entry>删除项目</button>
+                </div>
+              </div>
+              <div class="tag-row">
+                <span class="tag">产品原型</span>
+                <span class="tag">异常协同</span>
+                <span class="tag">SOP 设计</span>
+                <span class="tag">后台看板</span>
+              </div>
+            </article>
 
-          <article class="card reveal demo-card" data-entry-id="factory-exception-agent" data-entry-type="project" data-entry-kind="default">
-            <div class="card-topline">
-              <span class="pill">项目案例</span>
-              <span class="meta">AI Agent / 可交互 Demo</span>
-            </div>
-            <h3>Factory Exception Agent｜厂内物流助手</h3>
-            <p>
-              基于实习期间整理的 SOP、FAQ 和异常规则，构建单 Agent 的厂内物流异常处理助手，支持日常对话、SOP 问答、查表和动作草稿生成。
-            </p>
-            <div class="sub-block">
-              <h4>项目重点</h4>
-              <p>复用 FastAPI + dist 聊天界面，接入 RAG、本地 tools 和人工确认机制，将静态方案进一步落成可交互 demo。</p>
-            </div>
-            <div class="tag-row">
-              <span class="tag">RAG</span>
-              <span class="tag">Agent</span>
-              <span class="tag">SOP 问答</span>
-              <span class="tag">人工确认</span>
-            </div>
-            <div class="actions">
-              <a class="btn btn-primary" href="projects/factory-exception-agent/" target="_blank" rel="noopener">查看项目</a>
-              <button class="btn btn-danger admin-only" type="button" data-delete-entry>删除项目</button>
-            </div>
-          </article>
+            <article class="project-item reveal" data-entry-id="factory-exception-agent" data-entry-type="project" data-entry-kind="default">
+              <div class="project-order" aria-hidden="true"></div>
+              <div class="project-main">
+                <div class="project-topline">
+                  <span class="pill">项目案例</span>
+                  <span class="meta">AI Agent / 可交互 Demo</span>
+                </div>
+                <h3>Factory Exception Agent｜厂内物流助手</h3>
+                <p class="project-summary">
+                  基于实习期间整理的 SOP、FAQ 和异常规则，构建单 Agent 的厂内物流异常处理助手，支持日常对话、SOP 问答、查表和动作草稿生成。
+                </p>
+              </div>
+              <div class="project-side">
+                <div class="project-focus">
+                  <h4>项目重点</h4>
+                  <p class="project-focus-copy">复用 FastAPI + dist 聊天界面，接入 RAG、本地 tools 和人工确认机制，将静态方案进一步落成可交互 demo。</p>
+                </div>
+                <div class="actions">
+                  <a class="btn btn-primary project-cta" href="projects/factory-exception-agent/" target="_blank" rel="noopener">查看项目</a>
+                  <button class="btn btn-danger admin-only" type="button" data-delete-entry>删除项目</button>
+                </div>
+              </div>
+              <div class="tag-row">
+                <span class="tag">RAG</span>
+                <span class="tag">Agent</span>
+                <span class="tag">SOP 问答</span>
+                <span class="tag">人工确认</span>
+              </div>
+            </article>
 
-          <article class="card reveal demo-card" data-entry-id="charging-pile-assistant" data-entry-type="project" data-entry-kind="default">
-            <div class="card-topline">
-              <span class="pill">项目案例</span>
-              <span class="meta">空间分析 / 选址辅助系统</span>
-            </div>
-            <h3>Guangdong Province Charging Pile Site Selection Assistant</h3>
-            <p>
-              面向广东省充电基础设施规划场景的静态选址辅助系统，结合充电站分布与 POI 特征，支持城市级原型匹配、区域优先级识别与可解释分析展示。
-            </p>
-            <div class="sub-block">
-              <h4>项目重点</h4>
-              <p>基于本地数据完成城市级与区域级双层分析框架设计，将离线数据处理结果转化为可交互网页，用于辅助识别更值得优先核查的区域类型。</p>
-            </div>
-            <div class="tag-row">
-              <span class="tag">选址分析</span>
-              <span class="tag">空间决策</span>
-              <span class="tag">POI 特征</span>
-              <span class="tag">静态部署</span>
-            </div>
-            <div class="actions">
-              <a class="btn btn-primary" href="projects/charging-pile-assistant/" target="_blank" rel="noopener">查看项目</a>
-              <button class="btn btn-danger admin-only" type="button" data-delete-entry>删除项目</button>
-            </div>
-          </article>
+            <article class="project-item reveal" data-entry-id="charging-pile-assistant" data-entry-type="project" data-entry-kind="default">
+              <div class="project-order" aria-hidden="true"></div>
+              <div class="project-main">
+                <div class="project-topline">
+                  <span class="pill">项目案例</span>
+                  <span class="meta">空间分析 / 选址辅助系统</span>
+                </div>
+                <h3>Guangdong Province Charging Pile Site Selection Assistant</h3>
+                <p class="project-summary">
+                  面向广东省充电基础设施规划场景的静态选址辅助系统，结合充电站分布与 POI 特征，支持城市级原型匹配、区域优先级识别与可解释分析展示。
+                </p>
+              </div>
+              <div class="project-side">
+                <div class="project-focus">
+                  <h4>项目重点</h4>
+                  <p class="project-focus-copy">基于本地数据完成城市级与区域级双层分析框架设计，将离线数据处理结果转化为可交互网页，用于辅助识别更值得优先核查的区域类型。</p>
+                </div>
+                <div class="actions">
+                  <a class="btn btn-primary project-cta" href="projects/charging-pile-assistant/" target="_blank" rel="noopener">查看项目</a>
+                  <button class="btn btn-danger admin-only" type="button" data-delete-entry>删除项目</button>
+                </div>
+              </div>
+              <div class="tag-row">
+                <span class="tag">选址分析</span>
+                <span class="tag">空间决策</span>
+                <span class="tag">POI 特征</span>
+                <span class="tag">静态部署</span>
+              </div>
+            </article>
           </div>
         </div>
       </div>
     </section>
 
     <section class="section" id="experience">
-      <div class="container">
-        <div class="section-topbar reveal">
-          <div class="section-head section-head-inline">
-            <div class="section-kicker">EXPERIENCE</div>
-            <h2>实习与实践经历</h2>
-            <p>聚焦运营、供应链与物流场景中的分析支持、流程梳理与业务协同实践。</p>
-          </div>
+      <div class="container section-layout">
+        <div class="section-head section-lead reveal">
+          <div class="section-kicker">EXPERIENCE</div>
+          <h2>实习与实践经历</h2>
+          <p>聚焦运营、供应链与物流场景中的分析支持、流程梳理与业务协同实践。</p>
           <div class="section-top-actions">
             <button class="btn btn-secondary admin-only" type="button" id="openExperienceModal">添加经历</button>
           </div>
         </div>
 
-        <div class="timeline" id="experienceTimeline">
-          <article class="card reveal timeline-card" data-entry-id="sunshine-travel-ops-intern" data-entry-type="experience" data-entry-kind="default">
-            <div class="timeline-time">2024.11 – 2025.02</div>
-            <h3>阳光出行有限公司 · 运营实习生</h3>
-            <p>参与 50+ 城市司机激励方案设计、复核与上线，围绕新增、活跃、留存与成本搭建监控体系，支持运营策略评估与活动效果分析。</p>
-            <div class="timeline-actions admin-only-flex">
-              <button class="btn btn-danger" type="button" data-delete-entry>删除经历</button>
-            </div>
-          </article>
+        <div class="experience-stage reveal">
+          <div class="experience-list" id="experienceTimeline">
+            <article class="experience-item reveal" data-entry-id="sunshine-travel-ops-intern" data-entry-type="experience" data-entry-kind="default">
+              <div class="timeline-time">2024.11 – 2025.02</div>
+              <div class="experience-main">
+                <h3>阳光出行有限公司 · 运营实习生</h3>
+                <p class="experience-summary">参与 50+ 城市司机激励方案设计、复核与上线，围绕新增、活跃、留存与成本搭建监控体系，支持运营策略评估与活动效果分析。</p>
+                <div class="timeline-actions admin-only-flex">
+                  <button class="btn btn-danger" type="button" data-delete-entry>删除经历</button>
+                </div>
+              </div>
+            </article>
 
-          <article class="card reveal timeline-card" data-entry-id="xiaomi-logistics-planning-intern" data-entry-type="experience" data-entry-kind="default">
-            <div class="timeline-time">2024.07 – 2024.11</div>
-            <h3>中都星徽物流（小米汽车厂内物流部）· 物流规划实习生</h3>
-            <p>轮岗参与厂内物流现场，梳理物料配送、仓储与异常处理流程，基于 5000+ 条物料记录分析配送时效、库存策略与异常点，输出标准化 SOP。</p>
-            <div class="timeline-actions admin-only-flex">
-              <button class="btn btn-danger" type="button" data-delete-entry>删除经历</button>
-            </div>
-          </article>
-
+            <article class="experience-item reveal" data-entry-id="xiaomi-logistics-planning-intern" data-entry-type="experience" data-entry-kind="default">
+              <div class="timeline-time">2024.07 – 2024.11</div>
+              <div class="experience-main">
+                <h3>中都星徽物流（小米汽车厂内物流部）· 物流规划实习生</h3>
+                <p class="experience-summary">轮岗参与厂内物流现场，梳理物料配送、仓储与异常处理流程，基于 5000+ 条物料记录分析配送时效、库存策略与异常点，输出标准化 SOP。</p>
+                <div class="timeline-actions admin-only-flex">
+                  <button class="btn btn-danger" type="button" data-delete-entry>删除经历</button>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="section" id="skills">
-      <div class="container">
-        <div class="section-head reveal">
+      <div class="container section-layout">
+        <div class="section-head section-lead reveal">
           <div class="section-kicker">CAPABILITIES</div>
           <h2>能力结构</h2>
           <p>以业务问题为导向，覆盖分析判断、产品抽象、流程设计、空间分析与跨角色协同所需的核心能力。</p>
         </div>
 
-        <div class="card-grid skills-grid">
-          <article class="card reveal">
+        <div class="skills-list">
+          <article class="skill-row reveal">
             <h3>数据处理与分析</h3>
             <p>使用 Python、SQL、Excel 与 BI 工具完成数据清洗、指标分析、效果评估、问题定位与结果可视化。</p>
           </article>
-          <article class="card reveal">
+          <article class="skill-row reveal">
             <h3>产品设计与方案表达</h3>
             <p>围绕业务目标完成需求抽象、信息架构、功能结构设计与场景化方案表达。</p>
           </article>
-          <article class="card reveal">
+          <article class="skill-row reveal">
             <h3>交通、物流与空间分析</h3>
             <p>理解运营分析、供应链流程、交通系统与空间选址场景中的关键链路、协同关系与决策问题。</p>
           </article>
-          <article class="card reveal">
+          <article class="skill-row reveal">
             <h3>沟通与输出</h3>
             <p>具备中英文表达、结构化汇报、报告撰写与跨角色协同沟通能力。</p>
           </article>
@@ -251,11 +304,21 @@
 
     <section class="section" id="contact">
       <div class="container">
-        <div class="contact-card reveal">
-          <div>
+        <div class="contact-shell reveal">
+          <div class="contact-copy">
             <div class="section-kicker">CONTACT</div>
             <h2>联系我</h2>
             <p>欢迎通过邮件或微信联系，进一步沟通实习、校招与项目合作机会。</p>
+          </div>
+          <div class="contact-lines" aria-label="联系信息">
+            <div>
+              <span>Email</span>
+              <strong>chenhuichi83@gmail.com</strong>
+            </div>
+            <div>
+              <span>WeChat</span>
+              <strong>chen32270586</strong>
+            </div>
           </div>
           <div class="contact-actions">
             <a class="btn btn-primary" href="mailto:chenhuichi83@gmail.com">联系我</a>
