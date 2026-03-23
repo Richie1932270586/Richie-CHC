@@ -1,7 +1,6 @@
 :root {
   color-scheme: light;
   --bg: #edf2f5;
-  --bg-elevated: #f7f9fb;
   --sidebar: #0f1720;
   --sidebar-panel: #182430;
   --panel: #ffffff;
@@ -113,6 +112,7 @@ button {
 .primary-button,
 .ghost-button,
 .submit-button,
+.stop-button,
 .icon-button,
 .view-tab {
   transition: background 0.16s ease, transform 0.16s ease, color 0.16s ease;
@@ -122,6 +122,7 @@ button {
 .primary-button:hover,
 .ghost-button:hover,
 .submit-button:hover,
+.stop-button:hover,
 .icon-button:hover,
 .view-tab:hover {
   transform: translateY(-1px);
@@ -307,7 +308,7 @@ textarea {
 }
 
 .primary-button {
-  background: var(--ink);
+  background: var(--brand);
   color: white;
 }
 
@@ -424,7 +425,7 @@ textarea {
 }
 
 .runtime-banner.warning {
-  border-color: rgba(181, 71, 8, 0.22);
+  border-color: rgba(180, 83, 9, 0.22);
   background: var(--warning-soft);
 }
 
@@ -433,7 +434,7 @@ textarea {
 }
 
 .runtime-banner.success {
-  border-color: rgba(15, 118, 110, 0.22);
+  border-color: rgba(11, 114, 133, 0.22);
   background: var(--accent-soft);
 }
 
@@ -620,21 +621,6 @@ textarea {
   justify-content: space-between;
   gap: 12px;
   align-items: center;
-}
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.pill.danger {
-  background: var(--danger-soft);
-  color: var(--danger);
 }
 
 .composer-shell {

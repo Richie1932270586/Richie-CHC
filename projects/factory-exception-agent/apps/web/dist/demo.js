@@ -1,7 +1,4 @@
 const STORAGE_KEY = "factory-exception-agent-threads-v3";
-const API_BASE = (new URLSearchParams(window.location.search).get("api") || window.FACTORY_AGENT_API_BASE || "")
-  .trim()
-  .replace(/\/$/, "");
 
 const defaultAssistantMeta = {
   message: "",
@@ -27,25 +24,6 @@ const state = {
   runtimeConfig: null,
   toastTimer: null,
 };
-
-function buildApiUrl(path) {
-  return API_BASE ? `${API_BASE}${path}` : path;
-}
-
-function getApiTargetLabel() {
-  return API_BASE || "same-origin";
-}
-
-function formatRequestError(error, fallback) {
-  if (error?.name === "AbortError") {
-    return error.message || fallback;
-  }
-  const message = String(error?.message || "").trim();
-  if (!message || message === "Failed to fetch") {
-    return `${fallback}，请确认 Agent 后端已启动：${getApiTargetLabel()}`;
-  }
-  return message;
-}
 
 const elements = {
   newThreadButton: document.querySelector("#newThreadButton"),
@@ -91,6 +69,18 @@ const elements = {
   submitButton: document.querySelector("#submitButton"),
   toastBox: document.querySelector("#toastBox"),
 };
+
+const API_BASE = String(window.FACTORY_AGENT_API_BASE || "")
+  .trim()
+  .replace(/\/$/, "");
+
+function apiUrl(path) {
+  return API_BASE ? `${API_BASE}${path}` : path;
+}
+
+function displayApiBase() {
+  return API_BASE || window.location.origin;
+}
 
 function uid(prefix) {
   return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
@@ -464,17 +454,16 @@ function renderApp() {
 
 async function loadConfig() {
   try {
-    const response = await fetch(buildApiUrl("/api/config"));
-    if (!response.ok) {
-      throw new Error("配置加载失败");
-    }
+    const response = await fetch(apiUrl("/api/config"));
     const config = await response.json();
+    if (!response.ok) {
+      throw new Error(config.detail || "加载运行配置失败");
+    }
     state.runtimeConfig = config;
     const runtimeTitle = config.llm_connected
       ? `模型已连接 · ${config.llm_model}`
       : "本地语义模式 · 未连接真实模型";
     const runtimeDetails = [
-      `API: ${getApiTargetLabel()}`,
       `Provider: ${config.llm_provider}`,
       `Agent: ${config.agent_mode}`,
       `RAG: ${config.rag_enabled ? `${config.rag_profile} / top_k ${config.rag_top_k}` : "off"}`,
@@ -493,31 +482,33 @@ async function loadConfig() {
     state.runtimeConfig = null;
     elements.modeTag.textContent = "后端未连接";
     elements.runtimeTitle.textContent = "未连接到 Agent 后端";
-    elements.runtimeDescription.textContent = `当前页面正在尝试连接 ${getApiTargetLabel()}。请先启动 factory-exception-agent 后端，或通过 ?api=... / config.js 指向可访问的服务地址。`;
+    elements.runtimeDescription.textContent = `当前页面正在请求 ${displayApiBase()}，请确认后端已启动并保持可访问。`;
     elements.runtimeBanner.classList.add("warning");
     elements.runtimeBanner.classList.remove("success");
+    showToast(error.message || "无法连接 Agent 后端");
   }
 }
 
 async function refreshRagLibrary() {
   try {
     const [docsResponse, importsResponse] = await Promise.all([
-      fetch(buildApiUrl("/api/rag/documents")),
-      fetch(buildApiUrl("/api/rag/imports")),
+      fetch(apiUrl("/api/rag/documents")),
+      fetch(apiUrl("/api/rag/imports")),
     ]);
-    if (!docsResponse.ok || !importsResponse.ok) {
-      throw new Error("知识库加载失败");
-    }
     const docsData = await docsResponse.json();
     const importsData = await importsResponse.json();
+    if (!docsResponse.ok || !importsResponse.ok) {
+      throw new Error(docsData.detail || importsData.detail || "获取知识库失败");
+    }
     state.documents = docsData.documents || [];
     state.imports = importsData.imports || [];
     if (!elements.sourceDirInput.value.trim() && state.imports[0]?.source_dir) {
       elements.sourceDirInput.value = state.imports[0].source_dir;
     }
-  } catch {
+  } catch (error) {
     state.documents = [];
     state.imports = [];
+    showToast(error.message || "知识库加载失败");
   }
   renderDocuments();
   renderLatestImport();
@@ -527,25 +518,18 @@ async function confirmAction(actionId) {
   const selectedAssistant = getSelectedAssistant(getActiveThread());
   const action = (selectedAssistant?.meta?.actions || []).find((item) => item.action_id === actionId);
   if (!action) return;
-  try {
-    const response = await fetch(buildApiUrl("/api/actions/confirm"), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action_id: action.action_id,
-        action_type: action.action_type,
-        action_title: action.title,
-        draft: action.draft,
-      }),
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.detail || "确认失败");
-    }
-    showToast(data.message || "已确认");
-  } catch (error) {
-    showToast(formatRequestError(error, "确认失败"));
-  }
+  const response = await fetch(apiUrl("/api/actions/confirm"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action_id: action.action_id,
+      action_type: action.action_type,
+      action_title: action.title,
+      draft: action.draft,
+    }),
+  });
+  const data = await response.json();
+  showToast(data.message || "已确认");
 }
 
 async function submit(overrideMessage = "") {
@@ -569,7 +553,7 @@ async function submit(overrideMessage = "") {
   setLoadingState(true);
 
   try {
-    const response = await fetch(buildApiUrl("/api/chat"), {
+    const response = await fetch(apiUrl("/api/chat"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       signal: state.abortController.signal,
@@ -605,14 +589,13 @@ async function submit(overrideMessage = "") {
       showToast("已停止本次生成。");
       return;
     }
-    const errorMessage = formatRequestError(error, "请求失败");
     const assistantEntry = {
       id: uid("msg"),
       role: "assistant",
-      content: `请求失败：${errorMessage}`,
+      content: `请求失败：${error.message || "未知错误"}`,
       meta: {
         ...defaultAssistantMeta,
-        message: `请求失败：${errorMessage}`,
+        message: `请求失败：${error.message || "未知错误"}`,
         conclusion: "本次请求失败。",
         issue_type: "系统异常",
         risk_level: "medium",
@@ -652,7 +635,7 @@ async function importOfficeFolder() {
   elements.importButton.textContent = "导入中...";
   elements.importButton.disabled = true;
   try {
-    const response = await fetch(buildApiUrl("/api/rag/import-folder"), {
+    const response = await fetch(apiUrl("/api/rag/import-folder"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -668,7 +651,7 @@ async function importOfficeFolder() {
     showToast(data.message || "导入完成");
     await refreshRagLibrary();
   } catch (error) {
-    showToast(formatRequestError(error, "导入失败"));
+    showToast(error.message || "导入失败");
   } finally {
     state.importing = false;
     elements.importButton.textContent = "导入文件夹到 RAG";
