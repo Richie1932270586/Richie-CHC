@@ -6,174 +6,57 @@
     <title>厂内物流助手</title>
     <meta
       name="description"
-      content="厂内物流 / 仓储 / 质检协同的单 Agent demo，支持 SOP 查询、异常处理、RAG 检索与人工确认。"
+      content="厂内物流 / 仓储 / 质检协同的单 Agent demo，正在跳转到正式聊天界面。"
     />
     <script src="../../config.js"></script>
-    <link rel="stylesheet" href="./apps/web/dist/demo.css" />
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "Bahnschrift", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(180deg, #e9eff3 0%, #f7f9fb 100%);
+        color: #15232d;
+      }
+
+      .redirect-note {
+        padding: 18px 22px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(21, 35, 45, 0.08);
+        box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+        font-size: 14px;
+      }
+
+      a {
+        color: #075768;
+      }
+    </style>
   </head>
   <body>
-    <div class="app-shell">
-      <aside class="sidebar">
-        <div class="sidebar-top">
-          <div class="sidebar-brand">
-            <div class="brand-mark">FE</div>
-            <div>
-              <strong>厂内物流助手</strong>
-              <p>SOP 查询 / 异常处理 / 质检协同</p>
-            </div>
-          </div>
-
-          <button id="newThreadButton" class="sidebar-primary">+ 新建会话</button>
-
-          <section class="sidebar-section">
-            <div class="sidebar-section-title">会话记录</div>
-            <div id="threadList" class="thread-list"></div>
-          </section>
-        </div>
-
-        <div class="sidebar-bottom">
-          <details class="sidebar-fold">
-            <summary>知识库</summary>
-            <div class="fold-body">
-              <div class="fold-row">
-                <span class="fold-label">已索引</span>
-                <span class="status-tag" id="docCountTag">0 份文档</span>
-              </div>
-              <input id="sourceDirInput" class="path-input" placeholder="例如：E:\实习工作\中都物流-小米工作文件\小米汽车作业标准流程" />
-              <div class="stack-actions">
-                <button id="importButton" class="primary-button">导入文件夹到 RAG</button>
-                <button id="refreshDocsButton" class="ghost-button">刷新文档列表</button>
-              </div>
-              <label class="toggle inline-toggle">
-                <input id="replaceExisting" type="checkbox" checked />
-                <span>覆盖同一路径上次导入结果</span>
-              </label>
-              <div id="latestImportBox" class="mini-panel empty">还没有导入记录。</div>
-              <div id="documentList" class="compact-list"></div>
-            </div>
-          </details>
-
-          <details class="sidebar-fold">
-            <summary>运行设置</summary>
-            <div class="fold-body">
-              <label>
-                <span>Agent 模式</span>
-                <select id="agentMode">
-                  <option value="hybrid">hybrid</option>
-                  <option value="only-tool">only-tool</option>
-                </select>
-              </label>
-              <label>
-                <span>RAG 档位</span>
-                <select id="ragProfile">
-                  <option value="light">light</option>
-                  <option value="full">full</option>
-                </select>
-              </label>
-              <label class="toggle">
-                <input id="ragEnabled" type="checkbox" checked />
-                <span>启用 RAG</span>
-              </label>
-              <div class="fold-row">
-                <span class="fold-label">当前模式</span>
-                <span class="status-tag" id="modeTag">加载中</span>
-              </div>
-            </div>
-          </details>
-        </div>
-      </aside>
-
-      <main class="main-panel">
-        <header class="chat-header">
-          <div>
-            <h1 id="activeThreadTitle">新会话</h1>
-            <p id="activeThreadMeta" class="chat-subtitle">直接描述现场问题，或输入一个 SOP 名称开始查询。</p>
-          </div>
-          <div class="header-badges">
-            <span class="status-tag" id="activeDocTag">未锁定文档</span>
-            <span class="status-tag" id="threadStatsTag">0 条消息</span>
-          </div>
-        </header>
-
-        <section class="summary-strip">
-          <span class="summary-pill" id="selectedModeTag">等待响应</span>
-          <span class="summary-pill" id="selectedIssueTag">未分类</span>
-          <span class="summary-pill" id="selectedRiskTag">low</span>
-          <span class="summary-pill" id="selectedStepTag">0/0</span>
-        </section>
-
-        <section class="runtime-banner" id="runtimeBanner">
-          <div>
-            <strong id="runtimeTitle">当前运行状态</strong>
-            <p id="runtimeDescription">正在获取模型连接和检索配置。</p>
-          </div>
-        </section>
-
-        <nav class="view-tabs" id="viewTabs">
-          <button class="view-tab active" data-tab="chat">对话</button>
-          <button class="view-tab" data-tab="evidence">引用</button>
-          <button class="view-tab" data-tab="actions">动作</button>
-          <button class="view-tab" data-tab="tools">查询</button>
-        </nav>
-
-        <section class="panel-stack">
-          <section class="view-panel active" id="panel-chat">
-            <div id="messageList" class="message-list"></div>
-          </section>
-
-          <section class="view-panel" id="panel-evidence">
-            <div class="panel-card summary-box" id="summaryBox">选中一条助手回复后，这里会显示结论、风险等级和当前锁定文档。</div>
-            <div class="panel-head">
-              <h2>证据 / 引用</h2>
-              <span id="evidenceCount">0 条</span>
-            </div>
-            <div class="list-stack" id="evidenceList"></div>
-          </section>
-
-          <section class="view-panel" id="panel-actions">
-            <div class="panel-head">
-              <h2>建议动作</h2>
-              <span id="actionCount">0 个</span>
-            </div>
-            <div class="list-stack" id="actionList"></div>
-            <div class="panel-head second-head">
-              <h2>人工确认</h2>
-            </div>
-            <div id="confirmationBox" class="panel-card empty">当前回复未命中强制人工确认规则。</div>
-          </section>
-
-          <section class="view-panel" id="panel-tools">
-            <div class="panel-head">
-              <h2>结构化查询</h2>
-            </div>
-            <div class="list-stack" id="toolList"></div>
-          </section>
-        </section>
-
-        <footer class="composer-shell">
-          <div class="composer">
-            <textarea id="messageInput" placeholder="描述一个异常，或直接提问 SOP"></textarea>
-            <div class="composer-bottom">
-              <span class="composer-hint" id="composerHint">支持追问：下一步呢 / 注意什么 / 为什么要这样做</span>
-              <div class="composer-actions">
-                <button id="stopButton" class="stop-button" type="button" hidden>停止</button>
-                <button id="submitButton" class="submit-button" type="button">发送</button>
-              </div>
-            </div>
-          </div>
-        </footer>
-      </main>
-
-      <div id="toastBox" class="toast-layer"></div>
+    <div class="redirect-note">
+      正在打开厂内物流助手。
+      <a id="fallbackLink" href="./apps/web/dist/">如果没有自动跳转，请点击这里</a>
     </div>
-
     <script>
-      window.FACTORY_AGENT_API_BASE = (
-        new URLSearchParams(window.location.search).get("api") ||
-        window.FACTORY_AGENT_API_BASE ||
-        "http://127.0.0.1:8000"
-      ).trim().replace(/\/$/, "");
+      const params = new URLSearchParams(window.location.search);
+      const apiBase = String(params.get("api") || window.FACTORY_AGENT_API_BASE || "")
+        .trim()
+        .replace(/\/$/, "");
+      const target = new URL("./apps/web/dist/", window.location.href);
+      if (apiBase) {
+        target.searchParams.set("api", apiBase);
+      }
+      if (window.location.hash) {
+        target.hash = window.location.hash;
+      }
+      document.getElementById("fallbackLink").href = target.toString();
+      window.location.replace(target.toString());
     </script>
-    <script type="module" src="./apps/web/dist/demo.js"></script>
   </body>
 </html>

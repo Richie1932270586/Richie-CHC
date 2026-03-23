@@ -70,7 +70,9 @@ const elements = {
   toastBox: document.querySelector("#toastBox"),
 };
 
-const API_BASE = String(window.FACTORY_AGENT_API_BASE || "")
+const API_BASE = String(
+  new URLSearchParams(window.location.search).get("api") || window.FACTORY_AGENT_API_BASE || "",
+)
   .trim()
   .replace(/\/$/, "");
 
