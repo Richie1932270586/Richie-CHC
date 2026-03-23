@@ -183,7 +183,6 @@
 
   async function apiRequest(path, options = {}) {
     const headers = {
-      'Content-Type': 'application/json',
       ...(options.headers || {})
     };
 
@@ -200,6 +199,7 @@
     };
 
     if (options.body !== undefined) {
+      headers['Content-Type'] = 'application/json';
       requestInit.body = JSON.stringify(options.body);
     }
 
@@ -207,7 +207,7 @@
     try {
       response = await fetch(buildApiUrl(path), requestInit);
     } catch (error) {
-      throw new Error('无法连接编辑后端，请确认后端服务已启动，并在 config.js 中配置了正确的 API 地址。');
+      throw new Error('无法连接编辑服务，请确认 Cloudflare Worker 已部署，或本地后端已启动，并在 config.js 中配置了正确的 API 地址。');
     }
 
     const contentType = response.headers.get('content-type') || '';
@@ -227,7 +227,7 @@
       if (response.status === 401) {
         message = '编辑权限已失效，请重新输入密码。';
       }
-      if (response.status === 404) {
+      if (response.status === 404 && (!payload.error || /route not found/i.test(String(payload.error)))) {
         message = '未找到编辑后端接口，请确认 config.js 中的 API 地址是否正确。';
       }
       const error = new Error(message);
@@ -246,15 +246,43 @@
     });
   }
 
+  async function loadSiteContentFromApi() {
+    if (!EDITOR_API_BASE) {
+      throw new Error('Editor API base is not configured.');
+    }
+    const payload = await apiRequest('/api/content', {
+      method: 'GET',
+      skipAuth: true
+    });
+    if (!payload || !payload.content) {
+      throw new Error('Editor API did not return content.');
+    }
+    siteContent = normalizeSiteContent(payload.content);
+    renderAll();
+  }
+
+  async function loadSiteContentFromStaticJson() {
+    const response = await fetch(CONTENT_DATA_URL + '?v=' + Date.now(), { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error('Failed to load content JSON.');
+    }
+    const nextContent = await response.json();
+    siteContent = normalizeSiteContent(nextContent);
+    renderAll();
+  }
+
   async function loadSiteContent() {
-    try {
-      const response = await fetch(CONTENT_DATA_URL + '?v=' + Date.now(), { cache: 'no-store' });
-      if (!response.ok) {
-        throw new Error('Failed to load content JSON.');
+    if (EDITOR_API_BASE) {
+      try {
+        await loadSiteContentFromApi();
+        return;
+      } catch (error) {
+        console.warn('Failed to load API content, falling back to static JSON:', error);
       }
-      const nextContent = await response.json();
-      siteContent = normalizeSiteContent(nextContent);
-      renderAll();
+    }
+
+    try {
+      await loadSiteContentFromStaticJson();
     } catch (error) {
       renderAll();
       console.warn('Failed to load site content:', error);

@@ -1,21 +1,28 @@
 # Portfolio Editor Sync
 
-这个项目现在支持通过独立后端把项目/经历的增删操作同步到 GitHub 仓库。
+这个项目现在支持通过独立后端把项目 / 经历的增删操作同步到 GitHub 仓库。
+
+推荐方案：
+
+- 线上长期使用：部署 [Cloudflare Worker](/c:/Users/陈慧驰/Downloads/Richie-CHC%20(1)/Richie-CHC/cloudflare_worker/worker.js)
+- 本地临时调试：继续使用 [editor_backend/server.py](/c:/Users/陈慧驰/Downloads/Richie-CHC%20(1)/Richie-CHC/editor_backend/server.py)
+
+Cloudflare Worker 的完整部署说明见 [README_CLOUDFLARE_WORKER.md](/c:/Users/陈慧驰/Downloads/Richie-CHC%20(1)/Richie-CHC/README_CLOUDFLARE_WORKER.md)。
 
 ## 1. 配置前端 API 地址
 
 编辑 [config.js](/c:/Users/陈慧驰/Downloads/Richie-CHC%20(1)/Richie-CHC/config.js)：
 
 ```js
-window.PORTFOLIO_EDITOR_API_BASE = "http://127.0.0.1:8787";
+window.PORTFOLIO_EDITOR_API_BASE = "https://你的-worker.workers.dev";
 window.PORTFOLIO_CONTENT_URL = "data/site-content.json";
 ```
 
-如果后端部署在其他域名，就把 `PORTFOLIO_EDITOR_API_BASE` 改成对应的 HTTPS 地址。
+如果只是本地测试，也可以改回 `http://127.0.0.1:8787`。
 
 ## 2. 配置后端环境变量
 
-后端文件在 [editor_backend/server.py](/c:/Users/陈慧驰/Downloads/Richie-CHC%20(1)/Richie-CHC/editor_backend/server.py)。
+本地 Python 后端文件在 [editor_backend/server.py](/c:/Users/陈慧驰/Downloads/Richie-CHC%20(1)/Richie-CHC/editor_backend/server.py)。
 
 至少需要这些环境变量：
 
